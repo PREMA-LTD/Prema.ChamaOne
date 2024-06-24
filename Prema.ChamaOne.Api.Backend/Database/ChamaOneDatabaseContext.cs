@@ -1,4 +1,4 @@
-﻿﻿using System.Reflection;
+﻿using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,6 +11,7 @@ using Prema.ChamaOne.Api.Backend.Models;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection.Emit;
+using Prema.ChamaOne.Api.Backend.Database.LocationData;
 
 
 namespace Prema.ChamaOne.Api.Backend.Database
@@ -165,6 +166,18 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 new ContributionStatus { id = 2, name = "Pending" },
                 new ContributionStatus { id = 3, name = "Overdue" }
             );
+
+            var csvFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Database", "LocationData", "kenya-location-data.csv");
+            var records = LoadLocationData.LoadCsvData(csvFilePath);
+
+            var counties = records.Select(r => r.Item1).DistinctBy(c => c.id).ToList();
+            var subcounties = records.Select(r => r.Item2).DistinctBy(c => c.id).ToList();
+            var wards = records.Select(r => r.Item3).DistinctBy(w => w.id).ToList();
+
+            builder.Entity<County>().HasData(counties);
+            builder.Entity<Subcounty>().HasData(subcounties);
+            builder.Entity<Ward>().HasData(wards);
+
         }
 
 
