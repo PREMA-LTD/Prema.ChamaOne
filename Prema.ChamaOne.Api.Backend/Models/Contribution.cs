@@ -4,6 +4,7 @@ using Prema.ChamaOne.Api.Backend.Models.Location;
 
 namespace Prema.ChamaOne.Api.Backend.Models
 {
+    [Table("contribution")]
     public class Contribution
     {
         [Key]

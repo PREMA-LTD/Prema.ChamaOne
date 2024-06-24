@@ -20,10 +20,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [ForeignKey("fk_member_id")]
         public Member Member { get; set; }
 
-        [Required]
-        public int fk_transaction_id { get; set; }
-        [ForeignKey("fk_transaction_id")]
-        public Transaction Transaction { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 
     public class LoanDto

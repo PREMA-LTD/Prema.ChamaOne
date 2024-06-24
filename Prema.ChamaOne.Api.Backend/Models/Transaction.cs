@@ -16,9 +16,20 @@ namespace Prema.ChamaOne.Api.Backend.Models
 
 
         [Required]
-        public int fk_contribution_id { get; set; }
-        [ForeignKey("fk_contribution_id")]
-        public Contribution Contributions { get; set; }
+        public int fk_transaction_type_id { get; set; }
+        [ForeignKey("fk_transaction_type_id")]
+        public TransactionType TransactionType { get; set; }
+
+        [Required]
+        public int fk_transaction_entity_type_id { get; set; }
+        [ForeignKey("fk_transaction_entity_type_id")]
+        public TransactionEntityType TransactionEntityType { get; set; }
+
+        [Required]
+        public int fk_transaction_entity_id { get; set; }
+
+        public Contribution Contribution { get; set; }
+        public Loan Loan { get; set; }
 
     }
 

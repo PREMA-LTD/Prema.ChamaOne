@@ -12,5 +12,7 @@ namespace Prema.ChamaOne.Api.Backend.Models.Location
         public int fk_subcounty_id { get; set; }
         [ForeignKey("fk_subcounty_id")]
         public Subcounty Subcounty { get; set; }
+
+        public ICollection<Member> Members { get; set; }
     }
 }

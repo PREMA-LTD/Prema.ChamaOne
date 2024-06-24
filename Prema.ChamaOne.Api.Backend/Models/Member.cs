@@ -5,6 +5,7 @@ using Prema.ChamaOne.Api.Backend.Models.Location;
 
 namespace Prema.ChamaOne.Api.Backend.Models
 {
+    [Table("member")]
     public class Member
     {
         [Key]
@@ -32,7 +33,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [Required]
         public int fk_member_type_id { get; set; }
         [ForeignKey("fk_member_type_id")]
-        public MemberType MemberTypes { get; set; }
+        public MemberType MemberType { get; set; }
 
 
         public ICollection<Contribution> Contributions { get; set; }
