@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Prema.ChamaOne.Api.Backend.Database;
+using Prema.ChamaOne.Api.Backend.Controllers;
+using Prema.ChamaOne.Api.Backend.AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 string connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
@@ -48,5 +50,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGenderEndpoints();
+
+app.MapMemberEndpoints();
+
+app.MapContributionEndpoints();
+
+app.MapLoanEndpoints();
 
 app.Run();
