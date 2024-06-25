@@ -12,6 +12,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int id { get; set; }
         public decimal amount { get; set; }
         public decimal penalty { get; set; }
+        public DateOnly contribution_period { get; set; }
 
         [Required]
         public int fk_member_id { get; set; }
@@ -19,9 +20,9 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public Member Member { get; set; }
 
         [Required]
-        public int fk_contribution_status_id { get; set; }
-        [ForeignKey("fk_contribution_status_id")]
-        public ContributionStatus ContributionStatus { get; set; }
+        public TransactionStatusEnum fk_transaction_status_id { get; set; }
+        [ForeignKey("fk_transaction_status_id")]
+        public TransactionStatus TransactionStatus { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
     }

@@ -29,12 +29,15 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [ForeignKey("fk_gender_id")]
         public Gender Gender { get; set; }
 
-
         [Required]
         public int fk_member_type_id { get; set; }
         [ForeignKey("fk_member_type_id")]
         public MemberType MemberType { get; set; }
 
+        [Required]
+        public int fk_occupation_id { get; set; }
+        [ForeignKey("fk_occupation_id")]
+        public Occupation Occupation { get; set; }
 
         public ICollection<Contribution> Contributions { get; set; }
         public ICollection<Loan> Loans { get; set; }
@@ -49,5 +52,6 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int fk_residence_location_id { get; set; }
         public int fk_gender_id { get; set; }
         public int fk_member_type_id { get; set; }
+        public int fk_occupation_id { get; set; }
     }
 }

@@ -17,8 +17,8 @@ namespace Prema.ChamaOne.Api.Backend.AutoMapper
             CreateMap<MemberType, MemberTypeDto>();
             CreateMap<MemberTypeDto, MemberType>();
 
-            CreateMap<ContributionStatus, ContributionStatusDto>();
-            CreateMap<ContributionStatusDto, ContributionStatus>();
+            CreateMap<TransactionStatus, TransactionStatusDto>();
+            CreateMap<TransactionStatusDto, TransactionStatus>();
 
             CreateMap<Contribution, ContributionDto>();
             CreateMap<ContributionDto, Contribution>();

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Prema.ChamaOne.Api.Backend.Database;
 using Prema.ChamaOne.Api.Backend.Controllers;
 using Prema.ChamaOne.Api.Backend.AutoMapper;
+using Prema.ChamaOne.Api.Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddDbContext<ChamaOneDatabaseContext>(
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors()
 );
+
+builder.Services.AddHostedService<ContributionService>();
 
 var app = builder.Build();
 

@@ -13,12 +13,18 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public decimal interest_rate { get; set; }
         public decimal interest { get; set; }
         public decimal penalty { get; set; }
+        public DateTime date_due { get; set; }
 
 
         [Required]
         public int fk_member_id { get; set; }
         [ForeignKey("fk_member_id")]
         public Member Member { get; set; }
+
+        [Required]
+        public TransactionStatusEnum fk_transaction_status_id { get; set; }
+        [ForeignKey("fk_transaction_status_id")]
+        public TransactionStatus TransactionStatus { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
     }

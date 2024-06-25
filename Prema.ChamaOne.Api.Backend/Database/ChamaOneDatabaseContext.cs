@@ -44,6 +44,11 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .HasForeignKey(x => x.fk_member_type_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Member>()
+                .HasOne(x => x.Occupation)
+                .WithMany(x => x.Members)
+                .HasForeignKey(x => x.fk_occupation_id)
+                .HasPrincipalKey(x => x.id);
+            builder.Entity<Member>()
                 .HasOne(x => x.Ward)
                 .WithMany(x => x.Members)
                 .HasForeignKey(x => x.fk_residence_location_id)
@@ -52,6 +57,11 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .HasMany(x => x.Members)
                 .WithOne(x => x.MemberType)
                 .HasForeignKey(x => x.fk_member_type_id)
+                .HasPrincipalKey(x => x.id);
+            builder.Entity<Occupation>()
+                .HasMany(x => x.Members)
+                .WithOne(x => x.Occupation)
+                .HasForeignKey(x => x.fk_occupation_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Contribution>()
                 .HasOne(c => c.Member)
@@ -64,14 +74,19 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .HasForeignKey(x => x.fk_transaction_entity_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Contribution>()
-                .HasOne(x => x.ContributionStatus)
+                .HasOne(x => x.TransactionStatus)
                 .WithMany(x => x.Contributions)
-                .HasForeignKey(x => x.fk_contribution_status_id)
+                .HasForeignKey(x => x.fk_transaction_status_id)
                 .HasPrincipalKey(x => x.id);
-            builder.Entity<ContributionStatus>()
+            builder.Entity<TransactionStatus>()
                 .HasMany(x => x.Contributions)
-                .WithOne(x => x.ContributionStatus)
-                .HasForeignKey(x => x.fk_contribution_status_id)
+                .WithOne(x => x.TransactionStatus)
+                .HasForeignKey(x => x.fk_transaction_status_id)
+                .HasPrincipalKey(x => x.id);
+            builder.Entity<TransactionStatus>()
+                .HasMany(x => x.Loans)
+                .WithOne(x => x.TransactionStatus)
+                .HasForeignKey(x => x.fk_transaction_status_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Loan>()
                 .HasOne(x => x.Member)
@@ -82,6 +97,11 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .HasMany(x => x.Transactions)
                 .WithOne(x => x.Loan)
                 .HasForeignKey(x => x.fk_transaction_entity_id)
+                .HasPrincipalKey(x => x.id);
+            builder.Entity<Loan>()
+                .HasOne(x => x.TransactionStatus)
+                .WithMany(x => x.Loans)
+                .HasForeignKey(x => x.fk_transaction_status_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Transaction>()
                 .HasOne(x => x.Contribution)
@@ -145,6 +165,12 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 new MemberType { id = 6, name = "Treasurer" }
             );
 
+            builder.Entity<Occupation>().HasData(
+                new Occupation { id = 1, name = "Student" },
+                new Occupation { id = 2, name = "Employed" },
+                new Occupation { id = 3, name = "Self Employed" }
+            );
+
             builder.Entity<TransactionEntityType>().HasData(
                 new TransactionEntityType { id = 1, name = "Contribution" },
                 new TransactionEntityType { id = 2, name = "Loan" },
@@ -161,10 +187,10 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 new TransactionType { id = 6, name = "Welfare Disbursement" }
             );
 
-            builder.Entity<ContributionStatus>().HasData(
-                new ContributionStatus { id = 1, name = "Paid" },
-                new ContributionStatus { id = 2, name = "Pending" },
-                new ContributionStatus { id = 3, name = "Overdue" }
+            builder.Entity<TransactionStatus>().HasData(
+                new TransactionStatus { id = TransactionStatusEnum.Paid, name = "Paid" },
+                new TransactionStatus { id = TransactionStatusEnum.Pending, name = "Pending" },
+                new TransactionStatus { id = TransactionStatusEnum.Overdue, name = "Overdue" }
             );
 
             var csvFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Database", "LocationData", "kenya-location-data.csv");
@@ -187,7 +213,8 @@ namespace Prema.ChamaOne.Api.Backend.Database
         public DbSet<Ward> Ward { get; set; }
         public DbSet<Member> Member { get; set; }
         public DbSet<MemberType> MemberType { get; set; }
-        public DbSet<ContributionStatus> ContributionStatus { get; set; }
+        public DbSet<Occupation> Occupation { get; set; }
+        public DbSet<TransactionStatus> TransactionStatus { get; set; }
         public DbSet<Contribution> Contribution { get; set; }
         public DbSet<Loan> Loan { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
