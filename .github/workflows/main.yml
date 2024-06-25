@@ -20,4 +20,4 @@ jobs:
         with:
           context: ./Prema.ChamaOne.Api.Backend
           push: true
-          tags: kimzdocker/Prema.ChamaOne.Api.Backend:latest
+          tags: kimzdocker/prema.chamaone.api.backend:latest
