@@ -19,6 +19,12 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Prema.ChamaOne.Api.Backend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# Copy the csv file to the image
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+COPY ["Database/LocationData/kenya-location-data.csv", "./Database/LocationData/"]
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
