@@ -31,6 +31,5 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public decimal interest { get; set; }
         public decimal penalty { get; set; }
         public int fk_member_id { get; set; }
-        public int fk_transaction_id { get; set; }
     }
 }
