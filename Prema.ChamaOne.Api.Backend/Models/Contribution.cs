@@ -32,7 +32,8 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int id { get; set; }
         public decimal amount { get; set; }
         public decimal penalty { get; set; }
-        public int fk_contribution_status_id { get; set; }
+        public DateOnly contribution_period { get; set; }
+        public int fk_transaction_status_id { get; set; }
         public int fk_member_id { get; set; }
 
     }
