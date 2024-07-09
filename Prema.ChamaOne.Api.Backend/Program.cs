@@ -42,6 +42,8 @@ builder.Services.AddDbContext<ChamaOneDatabaseContext>(
         .EnableDetailedErrors()
 );
 
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<MobileSasa>();
 builder.Services.Configure<MobileSasaSettings>(builder.Configuration.GetSection("MobileSasa"));
 builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection("TelegramBot"));
 builder.Services.AddSingleton<TelegramBot>();

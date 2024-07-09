@@ -40,6 +40,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
         {
             var now = DateTime.Now;
             var nextRun = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            //var nextRun = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second + 10);
 
             return nextRun;
         }
