@@ -11,13 +11,13 @@ using Prema.ChamaOne.Api.Backend.Models;
 
 namespace Prema.ChamaOne.Api.Backend.Services
 {
-    public class ContributionService : IHostedService, IDisposable
+    public class ContributionUpdaterService : IHostedService, IDisposable
     {
         private Timer _timer;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<ContributionService> _logger;
+        private readonly ILogger<ContributionUpdaterService> _logger;
 
-        public ContributionService(IServiceProvider serviceProvider, ILogger<ContributionService> logger)
+        public ContributionUpdaterService(IServiceProvider serviceProvider, ILogger<ContributionUpdaterService> logger)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
@@ -25,7 +25,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Contribution Service is starting.");
+            _logger.LogInformation("Contribution Updater Service is starting.");
 
             var nextRunTime = GetNextRunTime();
             var currentTime = DateTime.Now;

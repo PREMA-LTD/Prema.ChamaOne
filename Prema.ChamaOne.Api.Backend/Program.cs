@@ -3,6 +3,11 @@ using Prema.ChamaOne.Api.Backend.Database;
 using Prema.ChamaOne.Api.Backend.Controllers;
 using Prema.ChamaOne.Api.Backend.AutoMapper;
 using Prema.ChamaOne.Api.Backend.Services;
+using Prema.ChamaOne.Api.Backend.AppSettings;
+using Prema.ChamaOne.Api.Backend.BulkSms;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Prema.ChamaOne.Api.Backend.Telegram;
+using Prema.ChamaOne.Api.Backend.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +42,13 @@ builder.Services.AddDbContext<ChamaOneDatabaseContext>(
         .EnableDetailedErrors()
 );
 
-builder.Services.AddHostedService<ContributionService>();
+builder.Services.Configure<MobileSasaSettings>(builder.Configuration.GetSection("MobileSasa"));
+builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection("TelegramBot"));
+builder.Services.AddSingleton<TelegramBot>();
+builder.Services.AddSingleton<Logger>();
+
+builder.Services.AddHostedService<ContributionUpdaterService>();
+builder.Services.AddHostedService<ContributionReminderService>();
 
 var app = builder.Build();
 
