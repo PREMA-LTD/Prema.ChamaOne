@@ -77,7 +77,9 @@
     "permissions": "Permissions",
     "permissions.role-switching": "Role Switching",
     "permissions.route-guard": "Route Guard",
-    "permissions.test": "Permission Test"
+    "permissions.test": "Permission Test",
+    "contributions": "Contributions",
+    "loans": "Loans"
   },
   "validations": {
     "required": "This field is required",

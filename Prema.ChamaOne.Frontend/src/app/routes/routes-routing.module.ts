@@ -24,6 +24,8 @@ const routes: Routes = [
       { path: '403', component: Error403Component },
       { path: '404', component: Error404Component },
       { path: '500', component: Error500Component },
+      { path: '', loadChildren: () => import('./contributions/contributions.module').then(m => m.ContributionsModule) },
+      { path: '', loadChildren: () => import('./loans/loans.module').then(m => m.LoansModule) },
     ],
   },
   {
