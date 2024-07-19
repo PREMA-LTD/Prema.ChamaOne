@@ -30,10 +30,10 @@ export class ContributionsContributionsComponent implements OnInit {
       field: 'fk_transaction_status_id',
       type: 'tag',
       tag: {
-        1: { text: 'Paid', color: 'green' },
-        2: { text: 'Pending', color: 'orange' },
-        3: { text: 'Overdue', color: 'red' },
-      },
+        1: { text: 'Paid', color: 'green-100' },
+        2: { text: 'Pending', color: 'orange-100' },
+        3: { text: 'Overdue', color: 'red-100' },
+      },        
     },
     { header: 'Member ID', field: 'fk_member_id' },
   ];

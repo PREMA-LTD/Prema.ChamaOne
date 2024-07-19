@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Send Message</h1>
+<div mat-dialog-content>
+  <form [formGroup]="sendMessageForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Recipient</mat-label>
+      <mat-select formControlName="contact">
+        <mat-option *ngFor="let member of members" [value]="member.contact">
+          {{ member.other_names }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Message</mat-label>
+      <textarea matInput formControlName="message"></textarea>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="primary" (click)="onSend()">Send</button>
+</div>

@@ -79,7 +79,8 @@
     "permissions.route-guard": "Route Guard",
     "permissions.test": "Permission Test",
     "contributions": "Contributions",
-    "loans": "Loans"
+    "loans": "Loans",
+    "messages": "Messages"
   },
   "validations": {
     "required": "This field is required",

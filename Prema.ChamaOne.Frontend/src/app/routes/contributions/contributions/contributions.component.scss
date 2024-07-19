@@ -1,0 +1,21 @@
+:host ::ng-deep .mtx-grid {
+    height: 480px;
+  }
+  
+
+  /* Define custom styles for the tag colors */
+.tag-paid {
+    background-color: green !important;
+    color: white !important;
+  }
+  
+  .tag-pending {
+    background-color: orange !important;
+    color: white !important;
+  }
+  
+  .tag-overdue {
+    background-color: red !important;
+    color: white !important;
+  }
+  

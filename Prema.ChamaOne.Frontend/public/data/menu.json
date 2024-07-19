@@ -17,6 +17,12 @@
       "name": "loans",
       "type": "link",
       "icon": "money"
+    },
+    {
+      "route": "messaging/messages",
+      "name": "messages",
+      "type": "link",
+      "icon": "chat"
     }
   ]
 }

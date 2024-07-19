@@ -1,0 +1,104 @@
+<page-header class="bg-cyan-50" />
+
+<button mat-raised-button color="primary" class="send-message-button" (click)="openSendMessageDialog()">Send Message</button>
+
+<table mat-table
+       [dataSource]="dataSource" multiTemplateDataRows
+       class="mat-elevation-z8">
+
+  <!-- Define columns for SMSRecord -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="message">
+    <th mat-header-cell *matHeaderCellDef> Message </th>
+    <td mat-cell *matCellDef="let element"> {{element.message}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="recipient_name">
+    <th mat-header-cell *matHeaderCellDef> Recipient Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.recipient_name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="recipient_contact">
+    <th mat-header-cell *matHeaderCellDef> Recipient Contact </th>
+    <td mat-cell *matCellDef="let element"> {{element.recipient_contact}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="date_time_sent">
+    <th mat-header-cell *matHeaderCellDef> Date </th>
+    <td mat-cell *matCellDef="let element"> {{element.date_time_sent | date:'short'}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="failure_count">
+    <th mat-header-cell *matHeaderCellDef> No of Failures </th>
+    <td mat-cell *matCellDef="let element"> {{element.failure_count}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let element">
+      <mat-tag [ngClass]="getStatusClass(element.status)">
+        {{ getStatusText(element.status) }}
+      </mat-tag>
+    </td>
+  </ng-container>
+
+  <!-- Expand Column -->
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row" *ngIf="element.smsFailures.length > 0" (click)="toggleExpandRow(element); $event.stopPropagation()">
+        <mat-icon>{{ expandedElement === element ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button (click)="resendMessage(element)" *ngIf="element.smsFailures.length > 0">Resend</button>
+        </td>
+      </ng-container>
+
+  <!-- Expanded Content Column -->
+  <ng-container matColumnDef="expandedDetail">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+        <div *ngIf="element.smsFailures.length > 0">
+          <table mat-table [dataSource]="element.smsFailures" class="mat-elevation-z8">
+            <ng-container matColumnDef="failureId">
+              <th mat-header-cell *matHeaderCellDef> Failure ID </th>
+              <td mat-cell *matCellDef="let failure"> {{failure.id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="error">
+              <th mat-header-cell *matHeaderCellDef> Error </th>
+              <td mat-cell *matCellDef="let failure"> {{failure.error}} </td>
+            </ng-container>
+            <ng-container matColumnDef="failureDate">
+              <th mat-header-cell *matHeaderCellDef> Failure Date </th>
+              <td mat-cell *matCellDef="let failure"> {{failure.date_time | date:'short'}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['failureId', 'error', 'failureDate']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['failureId', 'error', 'failureDate']"></tr>
+          </table>
+        </div>
+        <div *ngIf="element.smsFailures.length === 0">
+          No failures to display.
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
