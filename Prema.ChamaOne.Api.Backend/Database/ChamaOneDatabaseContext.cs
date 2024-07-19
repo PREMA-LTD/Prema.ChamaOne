@@ -148,6 +148,16 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithOne(i => i.Ward)
                 .HasForeignKey(i => i.fk_residence_location_id)
                 .HasPrincipalKey(i => i.id);
+            builder.Entity<SMSRecord>()
+                .HasMany(i => i.SMSFailures)
+                .WithOne(i => i.SMSRecord)
+                .HasForeignKey(i => i.fk_sms_record_id)
+                .HasPrincipalKey(i => i.id);
+            builder.Entity<SMSFailure>()
+                .HasOne(i => i.SMSRecord)
+                .WithMany(i => i.SMSFailures)
+                .HasForeignKey(i => i.fk_sms_record_id)
+                .HasPrincipalKey(i => i.id);
 
             this.OnModelBuilding(builder);
 
@@ -220,6 +230,8 @@ namespace Prema.ChamaOne.Api.Backend.Database
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<TransactionEntityType> TransactionEntityType { get; set; }
         public DbSet<TransactionType> TransactionType { get; set; }
+        public DbSet<SMSRecord> SMSRecord { get; set; }
+        public DbSet<SMSFailure> SMSFailure { get; set; }
     }
 
 }
