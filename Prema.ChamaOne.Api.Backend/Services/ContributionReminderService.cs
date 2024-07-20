@@ -16,9 +16,9 @@ namespace Prema.ChamaOne.Api.Backend.Services
         private readonly Logger _logger;
         private readonly TimeSpan _checkInterval = TimeSpan.FromHours(24); // Check daily if reminders need to be sent
         private readonly IMapper _mapper;
-        private readonly MobileSasa _bulkSms;
+        private readonly IBulkSms _bulkSms;
 
-        public ContributionReminderService(IServiceProvider serviceProvider, Logger logger, IMapper mapper, MobileSasa bulkSms)
+        public ContributionReminderService(IServiceProvider serviceProvider, Logger logger, IMapper mapper, IBulkSms bulkSms)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
@@ -67,7 +67,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
                     }
                     else
                     {
-                        await _bulkSms.SendSms($"+" + member.contact, message);
+                        await _bulkSms.SendSms($"+" + member.contact, $"{member.surname} {member.other_names}", message, "");
                     }
                 }
                 

@@ -27,4 +27,12 @@ namespace Prema.ChamaOne.Api.Backend.Models
         Pending = 2,
         Failed = 3
     }
+
+    public class SMS
+    {
+        public string message { get; set; }
+        public string recipient_name { get; set; }
+        public string recipient_contact { get; set; }
+        public string sender { get; set; }
+    }
 }

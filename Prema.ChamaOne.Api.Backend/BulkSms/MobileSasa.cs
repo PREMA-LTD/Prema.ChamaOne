@@ -8,7 +8,7 @@ using Prema.ChamaOne.Api.Backend.Telegram;
 
 namespace Prema.ChamaOne.Api.Backend.BulkSms
 {
-    public class MobileSasa
+    public class MobileSasa : IBulkSms
     {
         private readonly MobileSasaSettings mobileSasaSettings;
         private readonly Logger logger;
@@ -24,12 +24,12 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task<bool> SendSms(string contact, string message)
+        public async Task<bool> SendSms(string recipient_contact, string recipient_name, string message, string sender)
         {
             SMSRecord smsRecord = new SMSRecord
             {
-                recipient_contact = contact,
-                recipient_name = "",
+                recipient_contact = recipient_contact,
+                recipient_name = recipient_name,
                 message = message,
                 date_time_sent = DateTime.Now,
                 failure_count = 0,
@@ -42,7 +42,7 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
                 {
                     senderID = mobileSasaSettings.SenderId,
                     message = message,
-                    phones = contact
+                    phones = recipient_contact
                 };
 
                 var jsonContent = new StringContent(

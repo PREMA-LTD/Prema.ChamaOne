@@ -47,7 +47,7 @@ builder.Services.AddDbContext<ChamaOneDatabaseContext>(
 );
 
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<MobileSasa>();
+builder.Services.AddSingleton<IBulkSms, MobileSasa>();
 builder.Services.Configure<MobileSasaSettings>(builder.Configuration.GetSection("MobileSasa"));
 builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection("TelegramBot"));
 builder.Services.AddSingleton<TelegramBot>();
@@ -89,5 +89,7 @@ app.MapContributionEndpoints();
 app.MapLoanEndpoints();
 
 app.MapSMSRecordEndpoints();
+
+app.MapMessagingEndpoints();
 
 app.Run();
