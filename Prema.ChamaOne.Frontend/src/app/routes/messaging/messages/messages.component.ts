@@ -76,7 +76,8 @@ export class MessagingMessagesComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Message sent successfully');
+        console.log('Message sent successfully');        
+        this.fetchData();
       } else {
         console.log('Message sending canceled');
       }

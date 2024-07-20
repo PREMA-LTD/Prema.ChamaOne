@@ -26,6 +26,12 @@ export interface SMSFailure {
   fk_sms_record_id: number;
 }
 
+export interface SMS {
+  message: string;
+  recipient_name: string;
+  recipient_contact: string;
+  sender: string;
+}
 
 @Injectable()
 export class MessagingService {
@@ -33,5 +39,9 @@ export class MessagingService {
 
   getSmsRecords(): Observable<SMSRecord[]> {
     return this.http.get<SMSRecord[]>('http://localhost:5047/api/SMSRecord');
+  }
+  
+  sendSms(sms: SMS) {
+    return this.http.post('http://localhost:5047/api/Messaging/SendSingleSms', sms);
   }
 }
