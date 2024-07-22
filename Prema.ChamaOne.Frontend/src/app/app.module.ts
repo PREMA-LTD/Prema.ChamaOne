@@ -18,6 +18,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '@env/environment';
 import { BASE_URL, httpInterceptorProviders, appInitializerProviders } from '@core';
 
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+
 // Required for AOT compilation
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'i18n/', '.json');

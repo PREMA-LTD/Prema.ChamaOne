@@ -44,4 +44,8 @@ export class MessagingService {
   sendSms(sms: SMS) {
     return this.http.post('http://localhost:5047/api/Messaging/SendSingleSms', sms);
   }
+  
+  resendMessage(id: number) {
+    return this.http.post('http://localhost:5047/api/Messaging/ResendSingleSms', { id });
+  }
 }

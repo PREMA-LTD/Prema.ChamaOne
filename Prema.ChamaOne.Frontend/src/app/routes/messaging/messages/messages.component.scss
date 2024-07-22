@@ -33,7 +33,21 @@ table {
   }
 
   /* In your component CSS file */
-.send-message-button {
-    margin-bottom: 16px; /* Adjust the value as needed */
+  .send-message-button {
+      margin-bottom: 16px; /* Adjust the value as needed */
+    }
+    
+  .chip-sent {
+    background-color: green !important;
+    color: white;
   }
   
+  .chip-pending {
+    background-color: orange !important;
+    color: white;
+  }
+  
+  .chip-failed {
+    background-color: red !important;
+    color: white;
+  }

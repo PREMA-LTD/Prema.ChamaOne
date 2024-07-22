@@ -4,9 +4,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { SMSRecord, MessagingService } from '../messaging.service';
+import { SMSRecord, MessagingService, SMS } from '../messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SendSmsDialogComponent } from '../modals/semd-sms/send-sms.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-messaging-messages',
@@ -47,9 +48,9 @@ export class MessagingMessagesComponent {
 
   getStatusClass(status: number): string {
     switch (status) {
-      case 1: return 'green';
-      case 2: return 'orange';
-      case 3: return 'red';
+      case 1: return 'primary';
+      case 2: return 'accent';
+      case 3: return 'warn';
       default: return '';
     }
   }
@@ -64,7 +65,25 @@ export class MessagingMessagesComponent {
   }
 
   resendMessage(message: SMSRecord) {
-    console.log(message)
+    let sms: SMS = {
+      message: message.message,
+      recipient_name: message.recipient_name,
+      recipient_contact: this.formatPhoneNumber(message.recipient_contact),
+      sender: 'webapp'
+    }
+    this.messagingService.resendMessage(message.id).subscribe(
+      response => {
+        this.fetchData();
+      },
+      error => {
+        console.error('Error sending message:', error);
+      }
+    );
+  }
+
+  formatPhoneNumber(number: string) {
+    // Remove leading zero and add country code
+    return number.replace(/^0/, '254');
   }
 
   openSendMessageDialog(): void {
