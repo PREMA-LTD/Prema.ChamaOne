@@ -23,6 +23,17 @@ namespace Prema.ChamaOne.Api.Backend.Controllers
             })
             .WithName("SendSMS")
             .WithOpenApi();
+
+
+            group.MapPost("/ResendSingleSms", async (SMSRecord sMSRecord, ChamaOneDatabaseContext db, IBulkSms mobileSasa) =>
+            {
+                // Send the SMS using the injected service
+                await mobileSasa.ResendSms(sMSRecord.id);
+
+                return TypedResults.Ok();
+            })
+            .WithName("ResendSingleSms")
+            .WithOpenApi();
         }
     }
 }
