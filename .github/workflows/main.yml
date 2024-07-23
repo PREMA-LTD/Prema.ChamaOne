@@ -22,6 +22,6 @@ jobs:
       - name: build and push docker image to registry
         uses: docker/build-push-action@v5
         with:
-          context: ./Backend  # Ensure the context points to the Backend directory
+          context: ./Prema.ChamaOne.Api.Backend  # Ensure the context points to the Backend directory
           push: true
           tags: kimzdocker/prema.chamaone.api.backend:latest
