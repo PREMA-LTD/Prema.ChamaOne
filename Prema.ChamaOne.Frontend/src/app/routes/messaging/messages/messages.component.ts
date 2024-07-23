@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { SMSRecord, MessagingService, SMS } from '../messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SendSmsDialogComponent } from '../modals/semd-sms/send-sms.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-messaging-messages',
@@ -24,11 +25,15 @@ import { MatChipsModule } from '@angular/material/chips';
     ]),
   ],
 })
+
 export class MessagingMessagesComponent {
   dataSource = new MatTableDataSource<SMSRecord>([]);
   columnsToDisplay = ['id', 'message', 'recipient_name', 'recipient_contact', 'date_time_sent', 'failure_count', 'status', 'expand', 'action'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay];
   expandedElement!: SMSRecord | null;
+
+  resultsLength: number = 0;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private messagingService: MessagingService,
@@ -39,6 +44,8 @@ export class MessagingMessagesComponent {
   fetchData() {
     this.messagingService.getSmsRecords().subscribe((data: SMSRecord[]) => {
       this.dataSource.data = data;
+      this.resultsLength = data.length;
+      this.dataSource.paginator = this.paginator;
     });
   }
 

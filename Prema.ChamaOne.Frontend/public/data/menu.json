@@ -7,6 +7,12 @@
       "icon": "dashboard"
     },
     {
+      "route": "members",
+      "name": "members",
+      "type": "link",
+      "icon": "person"
+    },
+    {
       "route": "contributions",
       "name": "contributions",
       "type": "link",

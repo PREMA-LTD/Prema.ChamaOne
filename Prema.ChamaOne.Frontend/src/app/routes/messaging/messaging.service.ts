@@ -38,14 +38,14 @@ export class MessagingService {
   constructor(private http: HttpClient) {}
 
   getSmsRecords(): Observable<SMSRecord[]> {
-    return this.http.get<SMSRecord[]>('http://localhost:5047/api/SMSRecord');
+    return this.http.get<SMSRecord[]>('http://chamaone.prema.co.ke/api/SMSRecord');
   }
   
   sendSms(sms: SMS) {
-    return this.http.post('http://localhost:5047/api/Messaging/SendSingleSms', sms);
+    return this.http.post('http://chamaone.prema.co.ke/api/Messaging/SendSingleSms', sms);
   }
   
   resendMessage(id: number) {
-    return this.http.post('http://localhost:5047/api/Messaging/ResendSingleSms', { id });
+    return this.http.post('http://chamaone.prema.co.ke/api/Messaging/ResendSingleSms', { id });
   }
 }

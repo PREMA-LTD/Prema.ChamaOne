@@ -17,6 +17,6 @@ export class ContributionsService {
   constructor(private http: HttpClient) {}
 
   getContributions(): Observable<Contribution[]> {
-    return this.http.get<Contribution[]>('http://localhost:5047/api/Contribution');
+    return this.http.get<Contribution[]>('http://chamaone.prema.co.ke/api/Contribution');
   }
 }

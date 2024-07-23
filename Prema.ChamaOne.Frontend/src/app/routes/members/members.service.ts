@@ -21,6 +21,6 @@ export class MembersService {
   constructor(private http: HttpClient) {}
 
   getMembers(): Observable<Member[]> {
-    return this.http.get<Member[]>('http://localhost:5047/api/Member');
+    return this.http.get<Member[]>('http://chamaone.prema.co.ke/api/Member');
   }
 }

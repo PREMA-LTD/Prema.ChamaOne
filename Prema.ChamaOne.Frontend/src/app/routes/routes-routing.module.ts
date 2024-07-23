@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: '', loadChildren: () => import('./contributions/contributions.module').then(m => m.ContributionsModule) },
       { path: '', loadChildren: () => import('./loans/loans.module').then(m => m.LoansModule) },
       { path: 'messaging', loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) },
-      { path: 'members', loadChildren: () => import('./members/members.module').then(m => m.MembersModule) },
+      { path: '', loadChildren: () => import('./members/members.module').then(m => m.MembersModule) },
     ],
   },
   {
