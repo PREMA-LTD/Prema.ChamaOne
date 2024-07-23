@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Prema.ChamaOne.Api.Backend/**'  # This will watch for changes in the Backend directory
+  workflow_dispatch:
 
 jobs:
   push_to_registry:
