@@ -100,7 +100,6 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
             }
         }
 
-
         public async Task<bool> ResendSms(int smsRecordId)
         {
             bool request_status = false;
@@ -181,5 +180,6 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
                 return false;
             }
         }
+
     }
 }

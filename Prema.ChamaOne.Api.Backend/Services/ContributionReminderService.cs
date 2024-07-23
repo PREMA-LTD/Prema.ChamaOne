@@ -77,25 +77,27 @@ namespace Prema.ChamaOne.Api.Backend.Services
         }
 
         private string? GetReminderMessage(DateTime endOfMonth, string memberName)
-        {            
-            if(isDayOfDeadline(endOfMonth))
+        {
+            string ending = "Please clear your pending contributions to Shagilia before then. Your support is highly appreciated. For assistance, contact Enock at 0712490863. Thank you!";
+
+            if (isDayOfDeadline(endOfMonth))
             {
-                return $"Good morning {memberName}, today is the deadline for {endOfMonth.ToString("MMMM")} contributions. Kindly clear before end of day as to avoid penalties. Thank you and have a great day.";
+                return $"Dear {memberName}, today midnight is the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             } 
 
             if (isThreeDaysToDeadline(endOfMonth))
             {
-                return $"Good morning {memberName}, we have 3 days till the deadline for {endOfMonth.ToString("MMMM")} contributions. Kindly clear before then as to avoid penalties. Thank you and have a great day.";
+                return $"Dear {memberName}, we have 3 days till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             if (isOneWeekToDeadline(endOfMonth))
             {
-                return $"Good morning {memberName}, we have 1 week till the deadline for {endOfMonth.ToString("MMMM")} contributions. Kindly clear before then as to avoid penalties. Thank you and have a great day.";
+                return $"Dear {memberName}, we have 1 week till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             if (isTwoWeeksToDeadline(endOfMonth))
             {
-                return $"Good morning {memberName}, we have 2 weeks till the deadline for {endOfMonth.ToString("MMMM")} contributions. Kindly clear before then as to avoid penalties. Thank you and have a great day.";
+                return $"Dear {memberName}, we have 2 weeks till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             return null;
