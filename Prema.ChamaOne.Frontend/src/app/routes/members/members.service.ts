@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Member {
   id: number;
@@ -19,8 +20,9 @@ export interface Member {
 @Injectable()
 export class MembersService {
   constructor(private http: HttpClient) {}
+  private apiUrl = environment.apiUrl;
 
   getMembers(): Observable<Member[]> {
-    return this.http.get<Member[]>('http://chamaone.prema.co.ke/api/Member');
+    return this.http.get<Member[]>(`${this.apiUrl}/Member`);
   }
 }

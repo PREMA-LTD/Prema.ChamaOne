@@ -10,7 +10,7 @@ import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { finalize } from 'rxjs';
 
 import { PageHeaderComponent } from '@shared';
-import { Contribution, ContributionsService } from './contributions.service';
+import { Contribution, ContributionsService } from '../contributions.service';
 
 @Component({
   selector: 'app-contributions-contributions',

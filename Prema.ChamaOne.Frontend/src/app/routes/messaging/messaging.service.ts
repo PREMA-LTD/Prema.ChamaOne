@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface SMSRecord {
   id: number;
@@ -35,17 +36,18 @@ export interface SMS {
 
 @Injectable()
 export class MessagingService {
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
   getSmsRecords(): Observable<SMSRecord[]> {
-    return this.http.get<SMSRecord[]>('http://chamaone.prema.co.ke/api/SMSRecord');
+    return this.http.get<SMSRecord[]>(`${this.apiUrl}/SMSRecord`);
   }
   
   sendSms(sms: SMS) {
-    return this.http.post('http://chamaone.prema.co.ke/api/Messaging/SendSingleSms', sms);
+    return this.http.post(`${this.apiUrl}/Messaging/SendSingleSms`, sms);
   }
   
   resendMessage(id: number) {
-    return this.http.post('http://chamaone.prema.co.ke/api/Messaging/ResendSingleSms', { id });
+    return this.http.post(`${this.apiUrl}/Messaging/ResendSingleSms`, { id });
   }
 }
