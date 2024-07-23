@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://chamaone.prema.co.ke/api',
+  apiUrl: 'https://fintrack-backend.shangilia.africa/api',
   baseUrl: '',
   useHash: false,
 };
