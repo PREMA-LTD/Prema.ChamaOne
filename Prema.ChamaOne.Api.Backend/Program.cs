@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://localhost:4200") // Update this with your Angular app's URL
+            .WithOrigins("http://localhost:4200", "https://fintrack.shangilia.africa") // Update this with your Angular app's URL
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
