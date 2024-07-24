@@ -31,8 +31,6 @@ namespace Prema.ChamaOne.Api.Backend.Services
             var currentTime = DateTime.Now;
             var timeToGo = nextRunTime - currentTime;
 
-            DoWork(null);
-
             _timer = new Timer(DoWork, null, timeToGo, Timeout.InfiniteTimeSpan);
 
             return Task.CompletedTask;
