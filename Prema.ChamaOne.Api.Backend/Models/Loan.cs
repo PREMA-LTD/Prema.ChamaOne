@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Prema.ChamaOne.Api.Backend.Models
 {
     [Table("loan")]
-    public class Loan
+    public class Loan : TransactionEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
         public decimal principal { get; set; }
         public decimal interest_rate { get; set; }
         public decimal interest { get; set; }

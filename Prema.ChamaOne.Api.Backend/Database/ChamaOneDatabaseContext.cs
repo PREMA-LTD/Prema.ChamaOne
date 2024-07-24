@@ -104,13 +104,8 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .HasForeignKey(x => x.fk_transaction_status_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Transaction>()
-                .HasOne(x => x.Contribution)
-                .WithMany(x => x.Transactions)
-                .HasForeignKey(x => x.fk_transaction_entity_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Transaction>()
-                .HasOne(x => x.Loan)
-                .WithMany(x => x.Transactions)
+                .HasOne(x => x.TransactionEntity)
+                .WithMany("Transactions")
                 .HasForeignKey(x => x.fk_transaction_entity_id)
                 .HasPrincipalKey(x => x.id);
             builder.Entity<Transaction>()

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Prema.ChamaOne.Api.Backend.Database;
 using Prema.ChamaOne.Api.Backend.Models;
 using AutoMapper;
+using AutoMapper.Execution;
 namespace Prema.ChamaOne.Api.Backend.Controllers;
 
 public static class ContributionEndpoints
@@ -71,5 +72,71 @@ public static class ContributionEndpoints
         })
         .WithName("DeleteContribution")
         .WithOpenApi();
+
+
+        group.MapPost("/MakeContribution", async Task<Results<Ok<Contribution>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
+        {
+            //update contribution record
+            var contributionRecord = await db.Contribution
+                .Where(model =>
+                    model.contribution_period.Year == contributionDetails.contribution_period.Year &&
+                    model.contribution_period.Month == contributionDetails.contribution_period.Month &&
+                    model.fk_member_id == contributionDetails.member_id)
+                .FirstOrDefaultAsync();
+
+            if(contributionRecord == null)
+            {
+                var memberDetails = await db.Member
+                    .Where(model => model.id == contributionDetails.member_id)
+                    .FirstOrDefaultAsync();
+
+                if(memberDetails == null)
+                {
+                    return TypedResults.NotFound("Member data not found.");
+                }
+
+                contributionRecord = new Contribution
+                {
+                    fk_member_id = memberDetails.id,
+                    amount = memberDetails.fk_occupation_id == 1 ? 100 : 200, //different rate for employed and student
+                    penalty = 0,
+                    contribution_period = DateOnly.FromDateTime(DateTime.UtcNow),
+                    fk_transaction_status_id = TransactionStatusEnum.Pending, //pending
+                };
+
+                db.Contribution.Add(contributionRecord);
+            }
+
+            var balance = contributionRecord.amount + contributionRecord.penalty - contributionDetails.amount_paid;
+
+            if (balance == 0)
+            {
+                contributionRecord.fk_transaction_status_id = TransactionStatusEnum.Paid;
+            }
+
+            await db.SaveChangesAsync();
+
+            //save transaction record
+            var newTransaction = new Transaction
+            {
+                date_of_record = DateTime.UtcNow,
+                date = contributionDetails.date_of_payment,
+                amount = contributionDetails.amount_paid,
+                description = "Contribution payment",
+                reference =contributionDetails.reference,
+                fk_transaction_type_id = 1,
+                fk_transaction_entity_type_id = 1,
+                fk_transaction_entity_id = contributionRecord.id
+            };
+
+            db.Transaction.Add(newTransaction);
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(contributionRecord);
+        })
+        .WithName("MakeContribution")
+        .WithOpenApi();
+
     }
 }
