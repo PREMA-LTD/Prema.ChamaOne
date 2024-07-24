@@ -13,6 +13,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public DateTime date_of_transaction { get; set; }
         public decimal amount { get; set; }
         public string description { get; set; }
+        public string reference { get; set; }
 
 
         [Required]
@@ -40,6 +41,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public DateTime date_of_transaction { get; set; }
         public decimal amount { get; set; }
         public string description { get; set; }
+        public string reference { get; set; }
         public int fk_contribution_id { get; set; }
     }
 }
