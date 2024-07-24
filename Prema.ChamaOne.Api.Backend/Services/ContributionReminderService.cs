@@ -29,7 +29,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
         private TimeSpan CalculateInitialDelay()
         {
             DateTime now = DateTime.Now;
-            DateTime nextRun = new DateTime(now.Year, now.Month, now.Day, 10, 0, 0);
+            DateTime nextRun = new DateTime(now.Year, now.Month, now.Day, 7, 0, 0);
 
             if (now >= nextRun)
             {
