@@ -27,11 +27,11 @@ namespace Prema.ChamaOne.Api.Backend.Services
         {
             _logger.LogInformation("Contribution Updater Service is starting.");
 
-            DoWork(null);
-
             var nextRunTime = GetNextRunTime();
             var currentTime = DateTime.Now;
             var timeToGo = nextRunTime - currentTime;
+
+            DoWork(null);
 
             _timer = new Timer(DoWork, null, timeToGo, Timeout.InfiniteTimeSpan);
 
