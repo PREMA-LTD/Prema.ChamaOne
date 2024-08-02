@@ -63,66 +63,6 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithOne(x => x.Occupation)
                 .HasForeignKey(x => x.fk_occupation_id)
                 .HasPrincipalKey(x => x.id);
-            builder.Entity<Contribution>()
-                .HasOne(c => c.Member)
-                .WithMany(m => m.Contributions)
-                .HasForeignKey(c => c.fk_member_id)
-                .HasPrincipalKey(m => m.id);
-            builder.Entity<Contribution>()
-                .HasMany(x => x.Transactions)
-                .WithOne(x => x.Contribution)
-                .HasForeignKey(x => x.fk_transaction_entity_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Contribution>()
-                .HasOne(x => x.TransactionStatus)
-                .WithMany(x => x.Contributions)
-                .HasForeignKey(x => x.fk_transaction_status_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<TransactionStatus>()
-                .HasMany(x => x.Contributions)
-                .WithOne(x => x.TransactionStatus)
-                .HasForeignKey(x => x.fk_transaction_status_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<TransactionStatus>()
-                .HasMany(x => x.Loans)
-                .WithOne(x => x.TransactionStatus)
-                .HasForeignKey(x => x.fk_transaction_status_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Loan>()
-                .HasOne(x => x.Member)
-                .WithMany(x => x.Loans)
-                .HasForeignKey(x => x.fk_member_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Loan>()
-                .HasMany(x => x.Transactions)
-                .WithOne(x => x.Loan)
-                .HasForeignKey(x => x.fk_transaction_entity_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Loan>()
-                .HasOne(x => x.TransactionStatus)
-                .WithMany(x => x.Loans)
-                .HasForeignKey(x => x.fk_transaction_status_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Transaction>()
-                .HasOne(x => x.TransactionEntity)
-                .WithMany("Transactions")
-                .HasForeignKey(x => x.fk_transaction_entity_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Transaction>()
-                .HasOne(x => x.TransactionEntityType)
-                .WithMany(x => x.Transactions)
-                .HasForeignKey(x => x.fk_transaction_entity_type_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<Transaction>()
-                .HasOne(x => x.TransactionType)
-                .WithMany(x => x.Transactions)
-                .HasForeignKey(x => x.fk_transaction_type_id)
-                .HasPrincipalKey(x => x.id);
-            builder.Entity<TransactionEntityType>()
-                .HasMany(x => x.Transactions)
-                .WithOne(x => x.TransactionEntityType)
-                .HasForeignKey(x => x.fk_transaction_entity_type_id)
-                .HasPrincipalKey(x => x.id);
             builder.Entity<TransactionType>()
                 .HasMany(x => x.Transactions)
                 .WithOne(x => x.TransactionType)
@@ -153,6 +93,108 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithMany(i => i.SMSFailures)
                 .HasForeignKey(i => i.fk_sms_record_id)
                 .HasPrincipalKey(i => i.id);
+
+            // TransactionStatus configuration
+            builder.Entity<TransactionStatus>()
+                .HasKey(ts => ts.id);
+
+            builder.Entity<TransactionStatus>()
+                .HasMany(ts => ts.Loans)
+                .WithOne(te => te.TransactionStatus)
+                .HasForeignKey(te => te.fk_transaction_status_id);
+
+            builder.Entity<TransactionStatus>()
+                .HasMany(ts => ts.Contributions)
+                .WithOne(te => te.TransactionStatus)
+                .HasForeignKey(te => te.fk_transaction_status_id);
+
+            // Transaction configuration
+            builder.Entity<Transaction>()
+                .HasKey(t => t.id);
+
+            builder.Entity<Transaction>()
+                .Property(t => t.date)
+                .IsRequired();
+
+            builder.Entity<Transaction>()
+                .Property(t => t.date_of_record)
+                .IsRequired();
+
+            builder.Entity<Transaction>()
+                .Property(t => t.amount)
+                .IsRequired();
+
+            builder.Entity<Transaction>()
+                .Property(t => t.description)
+                .IsRequired();
+
+            builder.Entity<Transaction>()
+                .Property(t => t.reference)
+                .IsRequired();
+
+            builder.Entity<Transaction>()
+                .HasOne(t => t.TransactionType)
+                .WithMany(tt => tt.Transactions)
+                .HasForeignKey(t => t.fk_transaction_type_id);
+
+            builder.Entity<Transaction>()
+                .HasOne(t => t.TransactionEntityType)
+                .WithMany(tet => tet.Transactions)
+                .HasForeignKey(t => t.fk_transaction_entity_type_id);
+
+            builder.Entity<Transaction>()
+                .HasOne(t => t.TransactionEntity)
+                .WithMany()
+                .HasForeignKey(t => t.fk_transaction_entity_id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Contribution configuration
+            builder.Entity<Contribution>()
+                .HasOne(c => c.Member)
+                .WithMany(c => c.Contributions)
+                .HasForeignKey(c => c.fk_member_id)
+                .HasPrincipalKey(c => c.id);
+
+
+            builder.Entity<Contribution>()
+                .Property(c => c.amount)
+                .IsRequired();
+
+            builder.Entity<Contribution>()
+                .Property(c => c.penalty)
+                .IsRequired();
+
+            builder.Entity<Contribution>()
+                .Property(c => c.contribution_period)
+                .IsRequired();
+
+            // Loan configuration
+            builder.Entity<Loan>()
+                .HasOne(l => l.Member)
+                .WithMany(l => l.Loans)
+                .HasForeignKey(l => l.fk_member_id)
+                .HasPrincipalKey(l => l.id);
+
+
+            builder.Entity<Loan>()
+                .Property(l => l.principal)
+                .IsRequired();
+
+            builder.Entity<Loan>()
+                .Property(l => l.interest_rate)
+                .IsRequired();
+
+            builder.Entity<Loan>()
+                .Property(l => l.interest)
+                .IsRequired();
+
+            builder.Entity<Loan>()
+                .Property(l => l.penalty)
+                .IsRequired();
+
+            builder.Entity<Loan>()
+                .Property(l => l.date_due)
+                .IsRequired();
 
             this.OnModelBuilding(builder);
 

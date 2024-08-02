@@ -27,7 +27,6 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [ForeignKey("fk_transaction_entity_type_id")]
         public TransactionEntityType TransactionEntityType { get; set; }
 
-
         [Required]
         public int fk_transaction_entity_id { get; set; }
         [ForeignKey("fk_transaction_entity_id")]

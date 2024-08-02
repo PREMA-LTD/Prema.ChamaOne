@@ -16,10 +16,12 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [ForeignKey("fk_member_id")]
         public Member Member { get; set; }
 
+
         [Required]
         public TransactionStatusEnum fk_transaction_status_id { get; set; }
         [ForeignKey("fk_transaction_status_id")]
         public TransactionStatus TransactionStatus { get; set; }
+
 
         public ICollection<Transaction> Transactions { get; set; }
     }

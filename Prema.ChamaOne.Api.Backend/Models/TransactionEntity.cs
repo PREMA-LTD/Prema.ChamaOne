@@ -8,5 +8,6 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
+
     }
 }

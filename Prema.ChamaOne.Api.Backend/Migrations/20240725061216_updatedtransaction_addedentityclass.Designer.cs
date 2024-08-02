@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Prema.ChamaOne.Api.Backend.Database;
 
@@ -11,9 +12,11 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    partial class ChamaOneDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240725061216_updatedtransaction_addedentityclass")]
+    partial class updatedtransaction_addedentityclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11307,21 +11310,21 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Transaction", b =>
                 {
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Contribution", "Contribution")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("Contributionid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Loan", "Loan")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("Loanid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "TransactionEntity")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("fk_transaction_entity_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntityType", "TransactionEntityType")
@@ -11439,6 +11442,11 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     b.Navigation("SMSFailures");
                 });
 
+            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionEntityType", b =>
                 {
                     b.Navigation("Transactions");
@@ -11452,16 +11460,6 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionType", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Contribution", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
                 {
                     b.Navigation("Transactions");
                 });
