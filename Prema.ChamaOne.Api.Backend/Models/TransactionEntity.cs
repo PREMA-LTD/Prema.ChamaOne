@@ -9,5 +9,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
 
+        public ICollection<Transaction> Transactions { get; set; }
+
     }
 }

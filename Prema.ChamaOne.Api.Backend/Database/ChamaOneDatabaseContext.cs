@@ -137,16 +137,15 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithMany(tt => tt.Transactions)
                 .HasForeignKey(t => t.fk_transaction_type_id);
 
+            //builder.Entity<Transaction>()
+            //    .Property(t => t.TransactionEntityType)
+            //    .IsRequired();
+
             builder.Entity<Transaction>()
                 .HasOne(t => t.TransactionEntityType)
                 .WithMany(tet => tet.Transactions)
                 .HasForeignKey(t => t.fk_transaction_entity_type_id);
 
-            builder.Entity<Transaction>()
-                .HasOne(t => t.TransactionEntity)
-                .WithMany()
-                .HasForeignKey(t => t.fk_transaction_entity_id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Contribution configuration
             builder.Entity<Contribution>()
@@ -154,7 +153,6 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithMany(c => c.Contributions)
                 .HasForeignKey(c => c.fk_member_id)
                 .HasPrincipalKey(c => c.id);
-
 
             builder.Entity<Contribution>()
                 .Property(c => c.amount)
@@ -167,6 +165,12 @@ namespace Prema.ChamaOne.Api.Backend.Database
             builder.Entity<Contribution>()
                 .Property(c => c.contribution_period)
                 .IsRequired();
+
+            //builder.Entity<Contribution>()
+            //    .HasMany(l => l.Transactions)
+            //    .WithOne()
+            //    .HasForeignKey(t => t.fk_transaction_entity_id)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // Loan configuration
             builder.Entity<Loan>()
@@ -195,6 +199,14 @@ namespace Prema.ChamaOne.Api.Backend.Database
             builder.Entity<Loan>()
                 .Property(l => l.date_due)
                 .IsRequired();
+
+            //builder.Entity<Loan>()
+            //    .HasMany(l => l.Transactions)
+            //    .WithOne()
+            //    .HasForeignKey(t => t.fk_transaction_entity_id)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+
 
             this.OnModelBuilding(builder);
 

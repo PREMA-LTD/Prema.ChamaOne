@@ -24,7 +24,6 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public TransactionStatus TransactionStatus { get; set; }
 
 
-        public ICollection<Transaction> Transactions { get; set; }
     }
 
     public class LoanDto

@@ -8,6 +8,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
     public class Contribution : TransactionEntity
     {
         public decimal amount { get; set; }
+        public decimal balance { get; set; }
         public decimal penalty { get; set; }
         public DateOnly contribution_period { get; set; }
 
@@ -23,13 +24,13 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public TransactionStatus TransactionStatus { get; set; }
 
 
-        public ICollection<Transaction> Transactions { get; set; }
     }
     
     public class ContributionDto
     {
         public int id { get; set; }
         public decimal amount { get; set; }
+        public decimal balance { get; set; }
         public decimal penalty { get; set; }
         public DateOnly contribution_period { get; set; }
         public int fk_transaction_status_id { get; set; }

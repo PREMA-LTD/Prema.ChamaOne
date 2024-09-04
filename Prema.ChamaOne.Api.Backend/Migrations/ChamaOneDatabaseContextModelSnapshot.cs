@@ -22,6 +22,41 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Contribution", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<decimal>("amount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("balance")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateOnly>("contribution_period")
+                        .HasColumnType("date");
+
+                    b.Property<int>("fk_member_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_transaction_status_id")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("penalty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("fk_member_id");
+
+                    b.HasIndex("fk_transaction_status_id");
+
+                    b.ToTable("contribution");
+                });
+
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Gender", b =>
                 {
                     b.Property<int>("id")
@@ -49,6 +84,44 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                             id = 2,
                             name = "Female"
                         });
+                });
+
+            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("date_due")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("fk_member_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_transaction_status_id")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("interest")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("interest_rate")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("penalty")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("principal")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("fk_member_id");
+
+                    b.HasIndex("fk_transaction_status_id");
+
+                    b.ToTable("loan");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Location.County", b =>
@@ -10994,10 +11067,10 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Contributionid")
+                    b.Property<int?>("Contributionid")
                         .HasColumnType("int");
 
-                    b.Property<int>("Loanid")
+                    b.Property<int?>("Loanid")
                         .HasColumnType("int");
 
                     b.Property<decimal>("amount")
@@ -11032,28 +11105,11 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
                     b.HasIndex("Loanid");
 
-                    b.HasIndex("fk_transaction_entity_id");
-
                     b.HasIndex("fk_transaction_entity_type_id");
 
                     b.HasIndex("fk_transaction_type_id");
 
                     b.ToTable("transaction");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
-
-                    b.HasKey("id");
-
-                    b.ToTable("TransactionEntity");
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionEntityType", b =>
@@ -11180,60 +11236,40 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Contribution", b =>
                 {
-                    b.HasBaseType("Prema.ChamaOne.Api.Backend.Models.TransactionEntity");
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Member", "Member")
+                        .WithMany("Contributions")
+                        .HasForeignKey("fk_member_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<decimal>("amount")
-                        .HasColumnType("decimal(65,30)");
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionStatus", "TransactionStatus")
+                        .WithMany("Contributions")
+                        .HasForeignKey("fk_transaction_status_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateOnly>("contribution_period")
-                        .HasColumnType("date");
+                    b.Navigation("Member");
 
-                    b.Property<int>("fk_member_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_transaction_status_id")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("penalty")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasIndex("fk_member_id");
-
-                    b.HasIndex("fk_transaction_status_id");
-
-                    b.ToTable("contribution");
+                    b.Navigation("TransactionStatus");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
                 {
-                    b.HasBaseType("Prema.ChamaOne.Api.Backend.Models.TransactionEntity");
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Member", "Member")
+                        .WithMany("Loans")
+                        .HasForeignKey("fk_member_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("date_due")
-                        .HasColumnType("datetime(6)");
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionStatus", "TransactionStatus")
+                        .WithMany("Loans")
+                        .HasForeignKey("fk_transaction_status_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("fk_member_id")
-                        .HasColumnType("int");
+                    b.Navigation("Member");
 
-                    b.Property<int>("fk_transaction_status_id")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("interest")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("interest_rate")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("penalty")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("principal")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasIndex("fk_member_id");
-
-                    b.HasIndex("fk_transaction_status_id");
-
-                    b.ToTable("loan");
+                    b.Navigation("TransactionStatus");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Location.Subcounty", b =>
@@ -11306,23 +11342,13 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Transaction", b =>
                 {
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Contribution", "Contribution")
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Contribution", null)
                         .WithMany("Transactions")
-                        .HasForeignKey("Contributionid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Contributionid");
 
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Loan", "Loan")
+                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Loan", null)
                         .WithMany("Transactions")
-                        .HasForeignKey("Loanid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "TransactionEntity")
-                        .WithMany()
-                        .HasForeignKey("fk_transaction_entity_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Loanid");
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntityType", "TransactionEntityType")
                         .WithMany("Transactions")
@@ -11336,12 +11362,6 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Contribution");
-
-                    b.Navigation("Loan");
-
-                    b.Navigation("TransactionEntity");
-
                     b.Navigation("TransactionEntityType");
 
                     b.Navigation("TransactionType");
@@ -11349,57 +11369,17 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Contribution", b =>
                 {
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Member", "Member")
-                        .WithMany("Contributions")
-                        .HasForeignKey("fk_member_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionStatus", "TransactionStatus")
-                        .WithMany("Contributions")
-                        .HasForeignKey("fk_transaction_status_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", null)
-                        .WithOne()
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.Contribution", "id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-
-                    b.Navigation("TransactionStatus");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
-                {
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.Member", "Member")
-                        .WithMany("Loans")
-                        .HasForeignKey("fk_member_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionStatus", "TransactionStatus")
-                        .WithMany("Loans")
-                        .HasForeignKey("fk_transaction_status_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", null)
-                        .WithOne()
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.Loan", "id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-
-                    b.Navigation("TransactionStatus");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Gender", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Location.County", b =>
@@ -11452,16 +11432,6 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionType", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Contribution", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.Loan", b =>
                 {
                     b.Navigation("Transactions");
                 });

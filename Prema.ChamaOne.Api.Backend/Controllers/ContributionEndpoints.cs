@@ -95,17 +95,24 @@ public static class ContributionEndpoints
                     return TypedResults.NotFound("Member data not found.");
                 }
 
+                decimal contributionAmount = memberDetails.fk_occupation_id == 1 ? 100 : 200; //different rate for employed and student
+
                 contributionRecord = new Contribution
                 {
                     fk_member_id = memberDetails.id,
-                    amount = memberDetails.fk_occupation_id == 1 ? 100 : 200, //different rate for employed and student
+                    amount = contributionAmount, 
                     penalty = 0,
+                    balance = contributionAmount - contributionDetails.amount_paid,
                     contribution_period = DateOnly.FromDateTime(DateTime.UtcNow),
                     fk_transaction_status_id = TransactionStatusEnum.Pending, //pending
                 };
 
                 db.Contribution.Add(contributionRecord);
             }
+
+            //TODO check for overpayment will be solved by limiting amount that can be paid
+
+            contributionRecord.balance = (contributionRecord.amount + contributionRecord.penalty) - contributionDetails.amount_paid;
 
             var balance = contributionRecord.amount + contributionRecord.penalty - contributionDetails.amount_paid;
 
