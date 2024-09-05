@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Prema.ChamaOne.Api.Backend.BulkSms;
@@ -55,11 +56,13 @@ namespace Prema.ChamaOne.Api.Backend.Services
 
             if (isDayOfDeadline(endOfMonth) || isThreeDaysToDeadline(endOfMonth) || isOneWeekToDeadline(endOfMonth) || isTwoWeeksToDeadline(endOfMonth))
             {
-                List<MemberDto> members = GetListOfMembersWithPendingContributions();
+                List<MemberContributionBalance> members = GetListOfMembersWithPendingContributions();
 
-                foreach(MemberDto member in members)
+                foreach(MemberContributionBalance memberData in members)
                 {
-                    string? message = GetReminderMessage(endOfMonth, member.other_names);
+                    if (memberData.contributionBalance <= 0) return;
+
+                    string? message = GetReminderMessage(endOfMonth, memberData);
 
                     if (message == null)
                     {
@@ -67,7 +70,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
                     }
                     else
                     {
-                        await _bulkSms.SendSms($"+" + member.contact, $"{member.surname} {member.other_names}", message, "");
+                        await _bulkSms.SendSms($"+" + memberData.memberDto.contact, $"{memberData.memberDto.surname} {memberData.memberDto.other_names}", message, "");
                     }
                 }
                 
@@ -76,49 +79,57 @@ namespace Prema.ChamaOne.Api.Backend.Services
             }
         }
 
-        private string? GetReminderMessage(DateTime endOfMonth, string memberName)
+        private string? GetReminderMessage(DateTime endOfMonth, MemberContributionBalance memberData)
         {
-            string ending = "Please clear your pending contributions to Shagilia before then. Your support is highly appreciated. For assistance, contact Enock at 0712490863. Thank you!";
+            string ending = $"Please clear your pending contributions of Ksh. {memberData.contributionBalance.ToString("F2")} to Shagilia before then. Your support is highly appreciated. For assistance, contact Enock at 0712490863. Thank you!";
 
             if (isDayOfDeadline(endOfMonth))
             {
-                return $"Dear {memberName}, today midnight is the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
+                return $"Dear {memberData.memberDto.other_names}, today midnight is the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             } 
 
             if (isThreeDaysToDeadline(endOfMonth))
             {
-                return $"Dear {memberName}, we have 3 days till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
+                return $"Dear {memberData.memberDto.other_names}, we have 3 days till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             if (isOneWeekToDeadline(endOfMonth))
             {
-                return $"Dear {memberName}, we have 1 week till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
+                return $"Dear {memberData.memberDto.other_names}, we have 1 week till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             if (isTwoWeeksToDeadline(endOfMonth))
             {
-                return $"Dear {memberName}, we have 2 weeks till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
+                return $"Dear {memberData.memberDto.other_names}, we have 2 weeks till the deadline for {endOfMonth.ToString("MMMM")} contributions. {ending}";
             }
 
             return null;
         }
 
-        private List<MemberDto> GetListOfMembersWithPendingContributions()
+        private List<MemberContributionBalance> GetListOfMembersWithPendingContributions()
         {            
             using (var scope = _serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ChamaOneDatabaseContext>();
 
-                var members = dbContext.Member
+                var membersWithBalances = dbContext.Member
                     .Where(m => m.Contributions.Any(c =>
                         c.fk_transaction_status_id == TransactionStatusEnum.Pending &&
                         c.contribution_period.Month == DateTime.Now.Month &&
                         c.contribution_period.Year == DateTime.Now.Year))
+                    .Select(m => new MemberContributionBalance()
+                    {
+                        memberDto = _mapper.Map<MemberDto>(m),
+                        contributionBalance = m.Contributions
+                            .Where(c =>
+                                c.fk_transaction_status_id == TransactionStatusEnum.Pending &&
+                                c.contribution_period.Month == DateTime.Now.Month &&
+                                c.contribution_period.Year == DateTime.Now.Year)
+                            .Sum(c => c.balance)
+                    })
                     .ToList();
 
-                var memberDtos = _mapper.Map<List<MemberDto>>(members);
-
-                return memberDtos;
+                return membersWithBalances;
             }
         }
 

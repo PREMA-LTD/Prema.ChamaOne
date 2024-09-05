@@ -6,9 +6,13 @@ namespace Prema.ChamaOne.Api.Backend.Models
     [Table("loan")]
     public class Loan : TransactionEntity
     {
+        [Column(TypeName = "decimal(14,2)")]
         public decimal principal { get; set; }
+        [Column(TypeName = "decimal(5,2)")]
         public decimal interest_rate { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
         public decimal interest { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
         public decimal penalty { get; set; }
         public DateTime date_due { get; set; }
 

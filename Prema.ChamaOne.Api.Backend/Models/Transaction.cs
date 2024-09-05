@@ -12,6 +12,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int id { get; set; }
         public DateTime date { get; set; }
         public DateTime date_of_record { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
         public decimal amount { get; set; }
         public string description { get; set; }
         public string reference { get; set; }

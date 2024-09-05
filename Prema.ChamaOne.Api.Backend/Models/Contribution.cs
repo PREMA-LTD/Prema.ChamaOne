@@ -7,8 +7,11 @@ namespace Prema.ChamaOne.Api.Backend.Models
     [Table("contribution")]
     public class Contribution : TransactionEntity
     {
+        [Column(TypeName = "decimal(14,2)")]
         public decimal amount { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
         public decimal balance { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
         public decimal penalty { get; set; }
         public DateOnly contribution_period { get; set; }
 

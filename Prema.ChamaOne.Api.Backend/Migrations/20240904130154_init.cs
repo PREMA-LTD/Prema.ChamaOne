@@ -350,7 +350,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         principalTable: "contribution",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_transaction_loan_Loanid",
+                        name: "FK_transaction_loan_Loanid ",
                         column: x => x.Loanid,
                         principalTable: "loan",
                         principalColumn: "id");
