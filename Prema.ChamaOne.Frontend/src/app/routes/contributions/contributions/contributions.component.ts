@@ -8,9 +8,11 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { finalize } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 import { PageHeaderComponent } from '@shared';
 import { Contribution, ContributionsService } from '../contributions.service';
+import { PayModalComponent } from './pay_contribution.component'; 
 
 @Component({
   selector: 'app-contributions-contributions',
@@ -19,12 +21,16 @@ import { Contribution, ContributionsService } from '../contributions.service';
   providers: [ContributionsService],
 })
 export class ContributionsContributionsComponent implements OnInit {
+
+  constructor(public dialog: MatDialog) {}
+  
   private readonly remoteSrv = inject(ContributionsService);
 
   columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id' },
     { header: 'Amount', field: 'amount' },
     { header: 'Penalty', field: 'penalty' },
+    { header: 'Balance', field: 'balance' },
     {
       header: 'Status',
       field: 'fk_transaction_status_id',
@@ -36,7 +42,21 @@ export class ContributionsContributionsComponent implements OnInit {
       },        
     },
     { header: 'Member ID', field: 'fk_member_id' },
+    {
+      header: 'Action',
+      field: 'action',
+      type: 'button',
+      buttons: [
+        {
+          text: 'Pay',
+          color: 'primary',
+          click: (record: any) => this.openPayModal(record)
+        }
+      ]
+    }
   ];
+
+
   list: Contribution[] = [];
   total = 0;
   isLoading = true;
@@ -91,5 +111,19 @@ export class ContributionsContributionsComponent implements OnInit {
     this.query.page = 0;
     this.query.per_page = 10;
     this.getList();
+  }
+
+  openPayModal(record: any): void {
+    const dialogRef = this.dialog.open(PayModalComponent, {
+      width: '400px',
+      data: { contribution: record }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Modal closed with result:', result);
+        // Handle modal result here (e.g., refresh the grid)
+      }
+    });
   }
 }
