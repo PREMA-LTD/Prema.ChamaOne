@@ -266,8 +266,9 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    penalty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
+                    balance = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
+                    penalty = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
                     contribution_period = table.Column<DateOnly>(type: "date", nullable: false),
                     fk_member_id = table.Column<int>(type: "int", nullable: false),
                     fk_transaction_status_id = table.Column<int>(type: "int", nullable: false)
@@ -296,10 +297,10 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    principal = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    interest_rate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    interest = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    penalty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    principal = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
+                    interest_rate = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    interest = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
+                    penalty = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
                     date_due = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     fk_member_id = table.Column<int>(type: "int", nullable: false),
                     fk_transaction_status_id = table.Column<int>(type: "int", nullable: false)
@@ -330,7 +331,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     date_of_record = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(14,2)", nullable: false),
                     description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     reference = table.Column<string>(type: "longtext", nullable: false)
@@ -350,7 +351,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         principalTable: "contribution",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_transaction_loan_Loanid ",
+                        name: "FK_transaction_loan_Loanid",
                         column: x => x.Loanid,
                         principalTable: "loan",
                         principalColumn: "id");

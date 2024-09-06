@@ -12,8 +12,8 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    [Migration("20240904131555_added_balance_contribution")]
-    partial class added_balance_contribution
+    [Migration("20240905100220_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,10 +34,10 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
 
                     b.Property<decimal>("amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("balance")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<DateOnly>("contribution_period")
                         .HasColumnType("date");
@@ -49,7 +49,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("penalty")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.HasKey("id");
 
@@ -107,16 +107,16 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("interest")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("interest_rate")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("penalty")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("principal")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.HasKey("id");
 
@@ -11077,7 +11077,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime(6)");
