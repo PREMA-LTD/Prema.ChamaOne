@@ -324,6 +324,33 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "TransactionEntity",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_contribution_id = table.Column<int>(type: "int", nullable: false),
+                    fk_loan_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionEntity", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_TransactionEntity_contribution_fk_contribution_id",
+                        column: x => x.fk_contribution_id,
+                        principalTable: "contribution",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TransactionEntity_loan_fk_loan_id",
+                        column: x => x.fk_loan_id,
+                        principalTable: "loan",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "transaction",
                 columns: table => new
                 {
@@ -338,23 +365,17 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     fk_transaction_type_id = table.Column<int>(type: "int", nullable: false),
                     fk_transaction_entity_type_id = table.Column<int>(type: "int", nullable: false),
-                    fk_transaction_entity_id = table.Column<int>(type: "int", nullable: false),
-                    Contributionid = table.Column<int>(type: "int", nullable: true),
-                    Loanid = table.Column<int>(type: "int", nullable: true)
+                    fk_transaction_entity_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_transaction", x => x.id);
                     table.ForeignKey(
-                        name: "FK_transaction_contribution_Contributionid",
-                        column: x => x.Contributionid,
-                        principalTable: "contribution",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_transaction_loan_Loanid",
-                        column: x => x.Loanid,
-                        principalTable: "loan",
-                        principalColumn: "id");
+                        name: "FK_transaction_TransactionEntity_fk_transaction_entity_id",
+                        column: x => x.fk_transaction_entity_id,
+                        principalTable: "TransactionEntity",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_transaction_transaction_entity_type_fk_transaction_entity_ty~",
                         column: x => x.fk_transaction_entity_type_id,
@@ -2245,6 +2266,18 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransactionEntity_fk_contribution_id",
+                table: "TransactionEntity",
+                column: "fk_contribution_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionEntity_fk_loan_id",
+                table: "TransactionEntity",
+                column: "fk_loan_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_contribution_fk_member_id",
                 table: "contribution",
                 column: "fk_member_id");
@@ -2295,14 +2328,9 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 column: "fk_county_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_transaction_Contributionid",
+                name: "IX_transaction_fk_transaction_entity_id",
                 table: "transaction",
-                column: "Contributionid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_transaction_Loanid",
-                table: "transaction",
-                column: "Loanid");
+                column: "fk_transaction_entity_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_transaction_fk_transaction_entity_type_id",
@@ -2333,16 +2361,19 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 name: "sms_record");
 
             migrationBuilder.DropTable(
-                name: "contribution");
-
-            migrationBuilder.DropTable(
-                name: "loan");
+                name: "TransactionEntity");
 
             migrationBuilder.DropTable(
                 name: "transaction_entity_type");
 
             migrationBuilder.DropTable(
                 name: "transaction_type");
+
+            migrationBuilder.DropTable(
+                name: "contribution");
+
+            migrationBuilder.DropTable(
+                name: "loan");
 
             migrationBuilder.DropTable(
                 name: "member");

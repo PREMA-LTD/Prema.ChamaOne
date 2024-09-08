@@ -31,7 +31,8 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [Required]
         public int fk_transaction_entity_id { get; set; }
 
-
+        [ForeignKey("fk_transaction_entity_id")]
+        public TransactionEntity TransactionEntity { get; set; }
 
     }
 

@@ -101,7 +101,7 @@ public static class ContributionEndpoints
         .WithOpenApi();
 
 
-        group.MapPost("/MakeContribution", async Task<Results<Ok<Contribution>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
+        group.MapPost("/MakeContribution", async Task<Results<Ok<ContributionDto>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
         {
             //update contribution record
             var contributionRecord = await db.Contribution
@@ -144,9 +144,12 @@ public static class ContributionEndpoints
                 contributionRecord.fk_transaction_status_id = TransactionStatusEnum.Paid;
             }
 
-            await db.SaveChangesAsync();
-
             //save transaction record
+            TransactionEntity? transactionEntity = await db.TransactionEntity
+                .FirstOrDefaultAsync(t => t.fk_contribution_id == contributionRecord.id);
+
+            if (transactionEntity == null) return TypedResults.NotFound("Missing transaction entity record.");
+
             var newTransaction = new Transaction
             {
                 date_of_record = DateTime.UtcNow,
@@ -156,14 +159,16 @@ public static class ContributionEndpoints
                 reference =contributionDetails.reference,
                 fk_transaction_type_id = 1,
                 fk_transaction_entity_type_id = 1,
-                fk_transaction_entity_id = contributionRecord.id
+                fk_transaction_entity_id = transactionEntity.id
             };
 
             db.Transaction.Add(newTransaction);
 
             await db.SaveChangesAsync();
 
-            return TypedResults.Ok(contributionRecord);
+            var createdDto = mapper.Map<ContributionDto>(contributionRecord);
+
+            return TypedResults.Ok(createdDto);
         })
         .WithName("MakeContribution")
         .WithOpenApi();

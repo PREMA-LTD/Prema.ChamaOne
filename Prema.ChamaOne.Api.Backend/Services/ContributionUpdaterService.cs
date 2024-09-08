@@ -77,6 +77,18 @@ namespace Prema.ChamaOne.Api.Backend.Services
                         };
 
                         dbContext.Contribution.Add(contribution);
+
+                        dbContext.SaveChanges();
+
+                        var transactionEntity = new TransactionEntity
+                        {
+                            id = 0,
+                            fk_contribution_id = contribution.id
+                        };
+
+                        dbContext.TransactionEntity.Add(transactionEntity);
+
+                        dbContext.SaveChanges();
                     }
 
                     //update penalty for pending contributions

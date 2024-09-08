@@ -51,7 +51,7 @@ export class PayModalComponent {
         reference: this.paymentForm.get('reference')?.value,
         date_of_payment: this.paymentForm.get('dateOfPayment')?.value,
         contribution_period: this.data.contribution.contribution_period,
-        member_id: this.data.contribution.fk_member_id
+        member_id: this.data.contribution.member.id
       };
 
       // Call the makeContribution method in the service

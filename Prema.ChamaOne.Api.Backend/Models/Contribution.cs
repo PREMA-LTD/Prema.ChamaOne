@@ -6,8 +6,11 @@ using System.ComponentModel;
 namespace Prema.ChamaOne.Api.Backend.Models
 {
     [Table("contribution")]
-    public class Contribution : TransactionEntity
+    public class Contribution
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
         [Column(TypeName = "decimal(14,2)")]
         public decimal amount { get; set; }
         [Column(TypeName = "decimal(14,2)")]
@@ -29,6 +32,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public TransactionStatus TransactionStatus { get; set; }
 
 
+        public TransactionEntity TransactionEntity { get; set; }
     }
     
     public class ContributionDto
