@@ -65,10 +65,12 @@ namespace Prema.ChamaOne.Api.Backend.Services
 
                     if (!currentMonthContributionExists)
                     {
+                        decimal amountDue = member.fk_occupation_id == 1 ? 100 : 200; //different rate for employed and student
                         var contribution = new Contribution
                         {
                             fk_member_id = member.id,
-                            amount = member.fk_occupation_id == 1 ? 100 : 200, //different rate for employed and student
+                            amount = amountDue, 
+                            balance = amountDue,
                             penalty = 0,
                             contribution_period = currentPeriod,
                             fk_transaction_status_id = TransactionStatusEnum.Pending, //pending
@@ -81,9 +83,13 @@ namespace Prema.ChamaOne.Api.Backend.Services
                     var previousContribution = dbContext.Contribution
                         .FirstOrDefault(c => c.fk_member_id == member.id && c.contribution_period == previousPeriod && c.fk_transaction_status_id == TransactionStatusEnum.Pending);
 
+
                     if (previousContribution != null)
                     {
-                        previousContribution.penalty = CalculatePenalty(previousContribution.amount);
+                        decimal penalty = CalculatePenalty(previousContribution.amount);
+
+                        previousContribution.penalty = penalty;
+                        previousContribution.balance = previousContribution.balance + penalty;
                         previousContribution.fk_transaction_status_id = TransactionStatusEnum.Overdue;
                         dbContext.Contribution.Update(previousContribution);
                     }

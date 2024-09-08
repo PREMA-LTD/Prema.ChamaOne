@@ -41,6 +41,18 @@ namespace Prema.ChamaOne.Api.Backend.Models
 
     }
 
+    public class ContributionAndMemberDto
+    {
+        public int id { get; set; }
+        public decimal amount { get; set; }
+        public decimal balance { get; set; }
+        public decimal penalty { get; set; }
+        public DateOnly contribution_period { get; set; }
+        public int fk_transaction_status_id { get; set; }
+        public Member? member { get; set; }
+
+    }
+
     public class ContributionDetails
     {
         public decimal amount_paid { get; set; }

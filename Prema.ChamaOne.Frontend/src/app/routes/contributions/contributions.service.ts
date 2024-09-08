@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Member } from '../members/members.service';
 
 export interface Contribution {
   id: number;
@@ -21,6 +22,17 @@ export interface ContributionDetails {
     member_id: number;
 }
 
+export interface ContributionAndMember {
+  id: number;
+  amount: string;
+  penalty: string;
+  balance: string;
+  contribution_period: string;
+  fk_transaction_status_id: number;
+  member: Member;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,13 +41,13 @@ export class ContributionsService {
 
   constructor(private http: HttpClient) {}
 
-  getContributions(): Observable<Contribution[]> {
-    return this.http.get<Contribution[]>(`${this.apiUrl}/Contribution`);
+  getContributions(): Observable<ContributionAndMember[]> {
+    return this.http.get<ContributionAndMember[]>(`${this.apiUrl}/Contribution`);
   }
 
 
   makeContribution(contributionDetails: ContributionDetails): Observable<Contribution> {
-    return this.http.post<Contribution>(`${this.apiUrl}/MakeContribution`, contributionDetails);
+    return this.http.post<Contribution>(`${this.apiUrl}/Contribution/MakeContribution`, contributionDetails);
   }
 
 }

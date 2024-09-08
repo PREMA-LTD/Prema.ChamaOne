@@ -15,8 +15,21 @@ public static class ContributionEndpoints
 
         group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper) =>
         {
-            var contributions = await db.Contribution.AsNoTracking().ToListAsync();
-            var contributionDtos = mapper.Map<List<ContributionDto>>(contributions);
+            var contributions = await db.Contribution
+                .AsNoTracking()
+                .Include(c => c.Member)  // Join with the Member entity
+                .Select(c => new ContributionAndMemberDto
+                {
+                    id = c.id,
+                    amount = c.amount,
+                    balance = c.balance,
+                    penalty = c.penalty,
+                    contribution_period = c.contribution_period,
+                    fk_transaction_status_id = c.fk_member_id,
+                    member = c.Member
+                })
+                .ToListAsync();
+            var contributionDtos = contributions;
             return Results.Ok(contributionDtos);
         })
         .WithName("GetAllContributions")
@@ -110,13 +123,9 @@ public static class ContributionEndpoints
                 db.Contribution.Add(contributionRecord);
             }
 
-            //TODO check for overpayment will be solved by limiting amount that can be paid
+            contributionRecord.balance = contributionRecord.balance - contributionDetails.amount_paid;
 
-            contributionRecord.balance = (contributionRecord.amount + contributionRecord.penalty) - contributionDetails.amount_paid;
-
-            var balance = contributionRecord.amount + contributionRecord.penalty - contributionDetails.amount_paid;
-
-            if (balance == 0)
+            if (contributionRecord.balance == 0)
             {
                 contributionRecord.fk_transaction_status_id = TransactionStatusEnum.Paid;
             }

@@ -11,8 +11,8 @@ import { finalize } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 
 import { PageHeaderComponent } from '@shared';
-import { Contribution, ContributionsService } from '../contributions.service';
-import { PayModalComponent } from './pay_contribution.component'; 
+import { Contribution, ContributionAndMember, ContributionsService } from '../contributions.service';
+import { PayModalComponent } from '../pay-contributions/pay_contribution.component'; 
 
 @Component({
   selector: 'app-contributions-contributions',
@@ -41,7 +41,11 @@ export class ContributionsContributionsComponent implements OnInit {
         3: { text: 'Overdue', color: 'red-10' },
       },        
     },
-    { header: 'Member ID', field: 'fk_member_id' },
+    {
+      header: 'Member',
+      field: 'member',
+      formatter: (record: any) => `${record.member.other_names} ${record.member.surname}`
+    },
     {
       header: 'Action',
       field: 'action',
@@ -50,6 +54,7 @@ export class ContributionsContributionsComponent implements OnInit {
         {
           text: 'Pay',
           color: 'primary',
+          iif: (record: any) => record.fk_transaction_status_id !== 1,
           click: (record: any) => this.openPayModal(record)
         }
       ]
@@ -57,7 +62,7 @@ export class ContributionsContributionsComponent implements OnInit {
   ];
 
 
-  list: Contribution[] = [];
+  list: ContributionAndMember[] = [];
   total = 0;
   isLoading = true;
 
@@ -113,16 +118,16 @@ export class ContributionsContributionsComponent implements OnInit {
     this.getList();
   }
 
-  openPayModal(record: any): void {
+  openPayModal(contribution: Contribution): void {
     const dialogRef = this.dialog.open(PayModalComponent, {
       width: '400px',
-      data: { contribution: record }
+      data: { contribution }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('Modal closed with result:', result);
-        // Handle modal result here (e.g., refresh the grid)
+      if (result.success === true) {
+        // Refresh the table after a successful payment
+        this.getList();
       }
     });
   }
