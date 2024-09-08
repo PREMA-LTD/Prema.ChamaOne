@@ -47,6 +47,14 @@ export class ContributionsContributionsComponent implements OnInit {
       formatter: (record: any) => `${record.member.other_names} ${record.member.surname}`
     },
     {
+      header: 'Period',
+      field: 'contribution_period',
+      formatter: (record: any) => {
+        const date = new Date(record.contribution_period); // Convert to JavaScript Date object
+        return date.toLocaleString('default', { month: 'long', year: 'numeric' }); // Format to "Month Year"
+      }
+    },
+    {
       header: 'Action',
       field: 'action',
       type: 'button',
@@ -88,15 +96,15 @@ export class ContributionsContributionsComponent implements OnInit {
     this.isLoading = true;
 
     this.remoteSrv
-      .getContributions()
+      .getContributions(this.query.page, this.query.per_page)
       .pipe(
         finalize(() => {
           this.isLoading = false;
         })
       )
       .subscribe(res => {
-        this.list = res;
-        this.total = res.length;
+        this.list = res.contributions;
+        this.total = res.total;
         this.isLoading = false;
       });
   }

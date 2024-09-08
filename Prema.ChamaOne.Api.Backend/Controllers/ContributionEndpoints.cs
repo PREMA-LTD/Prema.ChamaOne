@@ -5,6 +5,7 @@ using Prema.ChamaOne.Api.Backend.Database;
 using Prema.ChamaOne.Api.Backend.Models;
 using AutoMapper;
 using AutoMapper.Execution;
+using System.Drawing.Printing;
 namespace Prema.ChamaOne.Api.Backend.Controllers;
 
 public static class ContributionEndpoints
@@ -13,11 +14,18 @@ public static class ContributionEndpoints
     {
         var group = routes.MapGroup("/api/Contribution").WithTags(nameof(Contribution));
 
-        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper) =>
+        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1) =>
         {
+            var totalContributions = await db.Contribution
+                .AsNoTracking()
+                .CountAsync(); // Get total count for pagination
+
             var contributions = await db.Contribution
                 .AsNoTracking()
-                .Include(c => c.Member)  // Join with the Member entity
+                .Include(c => c.Member)  // Ensure Member is included in the query
+                .OrderBy(c => c.id) // Ensure a predictable order
+                .Skip(pageNumber * pageSize) // Skip records based on page number
+                .Take(pageSize) // Take records based on page size
                 .Select(c => new ContributionAndMemberDto
                 {
                     id = c.id,
@@ -25,15 +33,21 @@ public static class ContributionEndpoints
                     balance = c.balance,
                     penalty = c.penalty,
                     contribution_period = c.contribution_period,
-                    fk_transaction_status_id = c.fk_member_id,
+                    fk_transaction_status_id = (int)c.fk_transaction_status_id,
                     member = c.Member
                 })
                 .ToListAsync();
-            var contributionDtos = contributions;
-            return Results.Ok(contributionDtos);
+
+            // Return results including pagination metadata
+            return Results.Ok(new 
+            {
+                total = totalContributions,
+                contributions = contributions
+            });
         })
         .WithName("GetAllContributions")
         .WithOpenApi();
+
 
         group.MapGet("/{id}", async Task<Results<Ok<ContributionDto>, NotFound>> (int id, ChamaOneDatabaseContext db, IMapper mapper) =>
         {

@@ -27,11 +27,15 @@ export interface ContributionAndMember {
   amount: string;
   penalty: string;
   balance: string;
-  contribution_period: string;
+  contribution_period: Date;
   fk_transaction_status_id: number;
   member: Member;
 }
 
+export interface ContributionAndMemberPagination {
+  total: number;
+  contributions: ContributionAndMember[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +45,8 @@ export class ContributionsService {
 
   constructor(private http: HttpClient) {}
 
-  getContributions(): Observable<ContributionAndMember[]> {
-    return this.http.get<ContributionAndMember[]>(`${this.apiUrl}/Contribution`);
+  getContributions(page: number, perPage: number): Observable<ContributionAndMemberPagination> {
+    return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}`);
   }
 
 

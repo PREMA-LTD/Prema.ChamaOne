@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Prema.ChamaOne.Api.Backend.Models.Location;
+using System.ComponentModel;
 
 namespace Prema.ChamaOne.Api.Backend.Models
 {
@@ -10,6 +11,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [Column(TypeName = "decimal(14,2)")]
         public decimal amount { get; set; }
         [Column(TypeName = "decimal(14,2)")]
+        [DefaultValue(0)]
         public decimal balance { get; set; }
         [Column(TypeName = "decimal(14,2)")]
         public decimal penalty { get; set; }
