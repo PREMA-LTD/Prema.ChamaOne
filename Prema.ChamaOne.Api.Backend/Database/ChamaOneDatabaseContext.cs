@@ -33,6 +33,7 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithOne(m => m.Gender)
                 .HasForeignKey(m => m.fk_gender_id)
                 .HasPrincipalKey(g => g.id);
+
             builder.Entity<Member>()
                 .HasOne(m => m.Gender)
                 .WithMany(g => g.Members)
@@ -58,16 +59,19 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithOne(x => x.MemberType)
                 .HasForeignKey(x => x.fk_member_type_id)
                 .HasPrincipalKey(x => x.id);
+
             builder.Entity<Occupation>()
                 .HasMany(x => x.Members)
                 .WithOne(x => x.Occupation)
                 .HasForeignKey(x => x.fk_occupation_id)
                 .HasPrincipalKey(x => x.id);
+
             builder.Entity<TransactionType>()
                 .HasMany(x => x.Transactions)
                 .WithOne(x => x.TransactionType)
                 .HasForeignKey(x => x.fk_transaction_type_id)
                 .HasPrincipalKey(x => x.id);
+
             builder.Entity<Subcounty>()
                 .HasOne(i => i.County)
                 .WithMany(i => i.Subcounties)
@@ -83,6 +87,7 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithOne(i => i.Ward)
                 .HasForeignKey(i => i.fk_residence_location_id)
                 .HasPrincipalKey(i => i.id);
+
             builder.Entity<SMSRecord>()
                 .HasMany(i => i.SMSFailures)
                 .WithOne(i => i.SMSRecord)
@@ -97,12 +102,10 @@ namespace Prema.ChamaOne.Api.Backend.Database
             // TransactionStatus configuration
             builder.Entity<TransactionStatus>()
                 .HasKey(ts => ts.id);
-
             builder.Entity<TransactionStatus>()
                 .HasMany(ts => ts.Loans)
                 .WithOne(te => te.TransactionStatus)
                 .HasForeignKey(te => te.fk_transaction_status_id);
-
             builder.Entity<TransactionStatus>()
                 .HasMany(ts => ts.Contributions)
                 .WithOne(te => te.TransactionStatus)
@@ -111,42 +114,29 @@ namespace Prema.ChamaOne.Api.Backend.Database
             // Transaction configuration
             builder.Entity<Transaction>()
                 .HasKey(t => t.id);
-
             builder.Entity<Transaction>()
                 .Property(t => t.date)
                 .IsRequired();
-
             builder.Entity<Transaction>()
                 .Property(t => t.date_of_record)
                 .IsRequired();
-
             builder.Entity<Transaction>()
                 .Property(t => t.amount)
                 .IsRequired();
-
             builder.Entity<Transaction>()
                 .Property(t => t.description)
                 .IsRequired();
-
             builder.Entity<Transaction>()
                 .Property(t => t.reference)
                 .IsRequired();
-
             builder.Entity<Transaction>()
                 .HasOne(t => t.TransactionType)
                 .WithMany(tt => tt.Transactions)
                 .HasForeignKey(t => t.fk_transaction_type_id);
-
             builder.Entity<Transaction>()
                 .HasOne(t => t.TransactionEntityType)
                 .WithMany(tet => tet.Transactions)
                 .HasForeignKey(t => t.fk_transaction_entity_type_id);
-
-            builder.Entity<Transaction>()
-                .HasOne(t => t.TransactionEntity)
-                .WithMany()
-                .HasForeignKey(t => t.fk_transaction_entity_id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Contribution configuration
             builder.Entity<Contribution>()
@@ -154,16 +144,12 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithMany(c => c.Contributions)
                 .HasForeignKey(c => c.fk_member_id)
                 .HasPrincipalKey(c => c.id);
-
-
             builder.Entity<Contribution>()
                 .Property(c => c.amount)
                 .IsRequired();
-
             builder.Entity<Contribution>()
                 .Property(c => c.penalty)
                 .IsRequired();
-
             builder.Entity<Contribution>()
                 .Property(c => c.contribution_period)
                 .IsRequired();
@@ -174,27 +160,28 @@ namespace Prema.ChamaOne.Api.Backend.Database
                 .WithMany(l => l.Loans)
                 .HasForeignKey(l => l.fk_member_id)
                 .HasPrincipalKey(l => l.id);
-
-
             builder.Entity<Loan>()
                 .Property(l => l.principal)
                 .IsRequired();
-
             builder.Entity<Loan>()
                 .Property(l => l.interest_rate)
                 .IsRequired();
-
             builder.Entity<Loan>()
                 .Property(l => l.interest)
                 .IsRequired();
-
             builder.Entity<Loan>()
                 .Property(l => l.penalty)
                 .IsRequired();
-
             builder.Entity<Loan>()
                 .Property(l => l.date_due)
                 .IsRequired();
+
+            builder.Entity<TransactionEntity>()
+                .Property(c => c.fk_contribution_id)
+                .IsRequired(false);
+            builder.Entity<TransactionEntity>()
+                .Property(c => c.fk_loan_id)
+                .IsRequired(false);
 
             this.OnModelBuilding(builder);
 
@@ -265,6 +252,7 @@ namespace Prema.ChamaOne.Api.Backend.Database
         public DbSet<Contribution> Contribution { get; set; }
         public DbSet<Loan> Loan { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<TransactionEntity> TransactionEntity { get; set; }
         public DbSet<TransactionEntityType> TransactionEntityType { get; set; }
         public DbSet<TransactionType> TransactionType { get; set; }
         public DbSet<SMSRecord> SMSRecord { get; set; }

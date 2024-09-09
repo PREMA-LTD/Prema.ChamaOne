@@ -8,9 +8,11 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { finalize } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 import { PageHeaderComponent } from '@shared';
-import { Contribution, ContributionsService } from '../contributions.service';
+import { Contribution, ContributionAndMember, ContributionsService } from '../contributions.service';
+import { PayModalComponent } from '../pay-contributions/pay_contribution.component'; 
 
 @Component({
   selector: 'app-contributions-contributions',
@@ -19,12 +21,16 @@ import { Contribution, ContributionsService } from '../contributions.service';
   providers: [ContributionsService],
 })
 export class ContributionsContributionsComponent implements OnInit {
+
+  constructor(public dialog: MatDialog) {}
+  
   private readonly remoteSrv = inject(ContributionsService);
 
   columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id' },
     { header: 'Amount', field: 'amount' },
     { header: 'Penalty', field: 'penalty' },
+    { header: 'Balance', field: 'balance' },
     {
       header: 'Status',
       field: 'fk_transaction_status_id',
@@ -35,9 +41,36 @@ export class ContributionsContributionsComponent implements OnInit {
         3: { text: 'Overdue', color: 'red-10' },
       },        
     },
-    { header: 'Member ID', field: 'fk_member_id' },
+    {
+      header: 'Member',
+      field: 'member',
+      formatter: (record: any) => `${record.member.other_names} ${record.member.surname}`
+    },
+    {
+      header: 'Period',
+      field: 'contribution_period',
+      formatter: (record: any) => {
+        const date = new Date(record.contribution_period); // Convert to JavaScript Date object
+        return date.toLocaleString('default', { month: 'long', year: 'numeric' }); // Format to "Month Year"
+      }
+    },
+    {
+      header: 'Action',
+      field: 'action',
+      type: 'button',
+      buttons: [
+        {
+          text: 'Pay',
+          color: 'primary',
+          iif: (record: any) => record.fk_transaction_status_id !== 1,
+          click: (record: any) => this.openPayModal(record)
+        }
+      ]
+    }
   ];
-  list: Contribution[] = [];
+
+
+  list: ContributionAndMember[] = [];
   total = 0;
   isLoading = true;
 
@@ -63,15 +96,15 @@ export class ContributionsContributionsComponent implements OnInit {
     this.isLoading = true;
 
     this.remoteSrv
-      .getContributions()
+      .getContributions(this.query.page, this.query.per_page)
       .pipe(
         finalize(() => {
           this.isLoading = false;
         })
       )
       .subscribe(res => {
-        this.list = res;
-        this.total = res.length;
+        this.list = res.contributions;
+        this.total = res.total;
         this.isLoading = false;
       });
   }
@@ -91,5 +124,19 @@ export class ContributionsContributionsComponent implements OnInit {
     this.query.page = 0;
     this.query.per_page = 10;
     this.getList();
+  }
+
+  openPayModal(contribution: Contribution): void {
+    const dialogRef = this.dialog.open(PayModalComponent, {
+      width: '400px',
+      data: { contribution }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.success === true) {
+        // Refresh the table after a successful payment
+        this.getList();
+      }
+    });
   }
 }

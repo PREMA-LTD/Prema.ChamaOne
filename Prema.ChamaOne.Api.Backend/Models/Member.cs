@@ -55,4 +55,10 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int fk_member_type_id { get; set; }
         public int fk_occupation_id { get; set; }
     }
+
+    public class MemberContributionBalance
+    {
+        public MemberDto memberDto { get; set; }
+        public decimal contributionBalance { get; set; }
+    }
 }

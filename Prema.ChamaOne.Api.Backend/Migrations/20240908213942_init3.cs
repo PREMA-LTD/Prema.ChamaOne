@@ -5,7 +5,7 @@
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class updatedsmsrecord : Migration
+    public partial class init3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

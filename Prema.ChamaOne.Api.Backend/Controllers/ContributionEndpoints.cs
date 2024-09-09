@@ -5,6 +5,7 @@ using Prema.ChamaOne.Api.Backend.Database;
 using Prema.ChamaOne.Api.Backend.Models;
 using AutoMapper;
 using AutoMapper.Execution;
+using System.Drawing.Printing;
 namespace Prema.ChamaOne.Api.Backend.Controllers;
 
 public static class ContributionEndpoints
@@ -13,14 +14,40 @@ public static class ContributionEndpoints
     {
         var group = routes.MapGroup("/api/Contribution").WithTags(nameof(Contribution));
 
-        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper) =>
+        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1) =>
         {
-            var contributions = await db.Contribution.AsNoTracking().ToListAsync();
-            var contributionDtos = mapper.Map<List<ContributionDto>>(contributions);
-            return Results.Ok(contributionDtos);
+            var totalContributions = await db.Contribution
+                .AsNoTracking()
+                .CountAsync(); // Get total count for pagination
+
+            var contributions = await db.Contribution
+                .AsNoTracking()
+                .Include(c => c.Member)  // Ensure Member is included in the query
+                .OrderBy(c => c.id) // Ensure a predictable order
+                .Skip(pageNumber * pageSize) // Skip records based on page number
+                .Take(pageSize) // Take records based on page size
+                .Select(c => new ContributionAndMemberDto
+                {
+                    id = c.id,
+                    amount = c.amount,
+                    balance = c.balance,
+                    penalty = c.penalty,
+                    contribution_period = c.contribution_period,
+                    fk_transaction_status_id = (int)c.fk_transaction_status_id,
+                    member = c.Member
+                })
+                .ToListAsync();
+
+            // Return results including pagination metadata
+            return Results.Ok(new 
+            {
+                total = totalContributions,
+                contributions = contributions
+            });
         })
         .WithName("GetAllContributions")
         .WithOpenApi();
+
 
         group.MapGet("/{id}", async Task<Results<Ok<ContributionDto>, NotFound>> (int id, ChamaOneDatabaseContext db, IMapper mapper) =>
         {
@@ -74,7 +101,7 @@ public static class ContributionEndpoints
         .WithOpenApi();
 
 
-        group.MapPost("/MakeContribution", async Task<Results<Ok<Contribution>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
+        group.MapPost("/MakeContribution", async Task<Results<Ok<ContributionDto>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
         {
             //update contribution record
             var contributionRecord = await db.Contribution
@@ -95,11 +122,14 @@ public static class ContributionEndpoints
                     return TypedResults.NotFound("Member data not found.");
                 }
 
+                decimal contributionAmount = memberDetails.fk_occupation_id == 1 ? 100 : 200; //different rate for employed and student
+
                 contributionRecord = new Contribution
                 {
                     fk_member_id = memberDetails.id,
-                    amount = memberDetails.fk_occupation_id == 1 ? 100 : 200, //different rate for employed and student
+                    amount = contributionAmount, 
                     penalty = 0,
+                    balance = contributionAmount - contributionDetails.amount_paid,
                     contribution_period = DateOnly.FromDateTime(DateTime.UtcNow),
                     fk_transaction_status_id = TransactionStatusEnum.Pending, //pending
                 };
@@ -107,16 +137,19 @@ public static class ContributionEndpoints
                 db.Contribution.Add(contributionRecord);
             }
 
-            var balance = contributionRecord.amount + contributionRecord.penalty - contributionDetails.amount_paid;
+            contributionRecord.balance = contributionRecord.balance - contributionDetails.amount_paid;
 
-            if (balance == 0)
+            if (contributionRecord.balance == 0)
             {
                 contributionRecord.fk_transaction_status_id = TransactionStatusEnum.Paid;
             }
 
-            await db.SaveChangesAsync();
-
             //save transaction record
+            TransactionEntity? transactionEntity = await db.TransactionEntity
+                .FirstOrDefaultAsync(t => t.fk_contribution_id == contributionRecord.id);
+
+            if (transactionEntity == null) return TypedResults.NotFound("Missing transaction entity record.");
+
             var newTransaction = new Transaction
             {
                 date_of_record = DateTime.UtcNow,
@@ -126,14 +159,16 @@ public static class ContributionEndpoints
                 reference =contributionDetails.reference,
                 fk_transaction_type_id = 1,
                 fk_transaction_entity_type_id = 1,
-                fk_transaction_entity_id = contributionRecord.id
+                fk_transaction_entity_id = transactionEntity.id
             };
 
             db.Transaction.Add(newTransaction);
 
             await db.SaveChangesAsync();
 
-            return TypedResults.Ok(contributionRecord);
+            var createdDto = mapper.Map<ContributionDto>(contributionRecord);
+
+            return TypedResults.Ok(createdDto);
         })
         .WithName("MakeContribution")
         .WithOpenApi();

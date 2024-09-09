@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Prema.ChamaOne.Api.Backend.Database;
 
@@ -11,9 +12,11 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    partial class ChamaOneDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240908213942_init3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11113,9 +11116,11 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int?>("fk_contribution_id")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("fk_loan_id")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -11388,11 +11393,15 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 {
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Contribution", "Contribution")
                         .WithOne("TransactionEntity")
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_contribution_id");
+                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_contribution_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Loan", "Loan")
                         .WithOne("TransactionEntity")
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_loan_id");
+                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_loan_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Contribution");
 

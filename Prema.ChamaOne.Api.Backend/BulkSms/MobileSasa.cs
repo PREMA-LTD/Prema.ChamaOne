@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using NuGet.Protocol.Plugins;
 using Prema.ChamaOne.Api.Backend.AppSettings;
 using Prema.ChamaOne.Api.Backend.Database;
@@ -178,6 +179,43 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
             {
                 logger.WriteToLog($"MakeSmsRequest: {ex}", "Error");
                 return false;
+            }
+        }
+
+        public async Task<int> GetBalance()
+        {
+            try
+            {
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {mobileSasaSettings.ApiToken}");
+
+                var response = await httpClient.GetAsync($"{mobileSasaSettings.ApiUrl}/v1/get-balance");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error fetching balance: {response.ReasonPhrase}");
+                }
+
+                // Parse the response body
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonResponse = JObject.Parse(content);
+
+                if (jsonResponse["responseCode"].ToString() == "0400")
+                {
+                    throw new Exception($"Error fetching balance: {jsonResponse["message"]}");
+                }
+
+
+                // Extract the balance field
+                int balance = (int)jsonResponse["balance"];
+
+                return balance;
+            }
+            catch (Exception ex)
+            {
+                logger.WriteToLog($"Fetching Balance: {ex}", "Error");
+                return -1;
             }
         }
 
