@@ -12,8 +12,8 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    [Migration("20240908210543_init")]
-    partial class init
+    [Migration("20240908210543_initold")]
+    partial class initold
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

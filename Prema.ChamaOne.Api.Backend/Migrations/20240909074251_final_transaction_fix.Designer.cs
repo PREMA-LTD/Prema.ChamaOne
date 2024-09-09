@@ -12,8 +12,8 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    [Migration("20240908210543_init")]
-    partial class init
+    [Migration("20240909074251_final_transaction_fix")]
+    partial class final_transaction_fix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -11116,11 +11116,9 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int?>("fk_contribution_id")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("fk_loan_id")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -11131,7 +11129,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     b.HasIndex("fk_loan_id")
                         .IsUnique();
 
-                    b.ToTable("TransactionEntity");
+                    b.ToTable("transaction_entity");
                 });
 
             modelBuilder.Entity("Prema.ChamaOne.Api.Backend.Models.TransactionEntityType", b =>
@@ -11393,15 +11391,11 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                 {
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Contribution", "Contribution")
                         .WithOne("TransactionEntity")
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_contribution_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_contribution_id");
 
                     b.HasOne("Prema.ChamaOne.Api.Backend.Models.Loan", "Loan")
                         .WithOne("TransactionEntity")
-                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_loan_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Prema.ChamaOne.Api.Backend.Models.TransactionEntity", "fk_loan_id");
 
                     b.Navigation("Contribution");
 
