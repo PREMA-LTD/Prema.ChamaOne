@@ -26,13 +26,13 @@ namespace Prema.ChamaOne.Api.Backend.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Contribution Updater Service is starting.");
-            DoWork(null);
+            
             var nextRunTime = GetNextRunTime();
             var currentTime = DateTime.Now;
             var timeToGo = nextRunTime - currentTime;
 
             _timer = new Timer(DoWork, null, timeToGo, Timeout.InfiniteTimeSpan);
-
+            DoWork(null);
             return Task.CompletedTask;
         }
 
