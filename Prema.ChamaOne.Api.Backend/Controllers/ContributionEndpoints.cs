@@ -135,6 +135,16 @@ public static class ContributionEndpoints
                 };
 
                 db.Contribution.Add(contributionRecord);
+
+                db.SaveChanges();
+
+                db.TransactionEntity.Add(new TransactionEntity
+                {
+                    id = 0,
+                    fk_contribution_id = contributionRecord.id
+                });
+
+                db.SaveChanges();
             }
 
             contributionRecord.balance = contributionRecord.balance - contributionDetails.amount_paid;
@@ -165,6 +175,9 @@ public static class ContributionEndpoints
             db.Transaction.Add(newTransaction);
 
             await db.SaveChangesAsync();
+
+            //send payment acknowledgement sms
+
 
             var createdDto = mapper.Map<ContributionDto>(contributionRecord);
 

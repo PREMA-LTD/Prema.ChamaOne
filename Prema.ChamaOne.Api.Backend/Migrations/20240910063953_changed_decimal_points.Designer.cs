@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Prema.ChamaOne.Api.Backend.Database;
 
@@ -11,9 +12,11 @@ using Prema.ChamaOne.Api.Backend.Database;
 namespace Prema.ChamaOne.Api.Backend.Migrations
 {
     [DbContext(typeof(ChamaOneDatabaseContext))]
-    partial class ChamaOneDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240910063953_changed_decimal_points")]
+    partial class changed_decimal_points
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,16 +107,16 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("interest")
-                        .HasColumnType("decimal(15,2)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("interest_rate")
-                        .HasColumnType("decimal(15,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("penalty")
-                        .HasColumnType("decimal(15,2)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("principal")
-                        .HasColumnType("decimal(15,2)");
+                        .HasColumnType("decimal(14,2)");
 
                     b.HasKey("id");
 

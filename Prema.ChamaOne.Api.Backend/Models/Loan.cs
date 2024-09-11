@@ -9,13 +9,13 @@ namespace Prema.ChamaOne.Api.Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        [Column(TypeName = "decimal(14,2)")]
+        [Column(TypeName = "decimal(15,2)")]
         public decimal principal { get; set; }
-        [Column(TypeName = "decimal(5,2)")]
+        [Column(TypeName = "decimal(15,2)")]
         public decimal interest_rate { get; set; }
-        [Column(TypeName = "decimal(14,2)")]
+        [Column(TypeName = "decimal(15,2)")]
         public decimal interest { get; set; }
-        [Column(TypeName = "decimal(14,2)")]
+        [Column(TypeName = "decimal(15,2)")]
         public decimal penalty { get; set; }
         public DateTime date_due { get; set; }
 

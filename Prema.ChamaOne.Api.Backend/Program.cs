@@ -8,6 +8,10 @@ using Prema.ChamaOne.Api.Backend.BulkSms;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Prema.ChamaOne.Api.Backend.Telegram;
 using Prema.ChamaOne.Api.Backend.Logging;
+using System.Security.Claims;
+using Prema.ChamaOne.Api.Backend.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +33,24 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.Audience = builder.Configuration["Authentication:Audience"];
+        o.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]
+        };
+    });
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-string connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
+string connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString")!;
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
 builder.Services.AddDbContext<ChamaOneDatabaseContext>(
@@ -91,5 +108,10 @@ app.MapLoanEndpoints();
 app.MapSMSRecordEndpoints();
 
 app.MapMessagingEndpoints();
+
+app.MapGet("users/me", (ClaimsPrincipal claimsPrinciple) =>
+{
+    return claimsPrinciple.Claims.ToDictionary(c => c.Type, c => c.Value);
+}).RequireAuthorization();
 
 app.Run();
