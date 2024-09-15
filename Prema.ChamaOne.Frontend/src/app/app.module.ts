@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -28,6 +28,25 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
 
 import { LoginService } from '@core/authentication/login.service';
 import { FakeLoginService } from './fake-login.service';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+
+export function initializeKeycloak(keycloak: KeycloakService) {
+  console.log("initializeKeycloak");
+  return () =>
+    keycloak.init({
+      config: {
+        url: environment.keycloakUrl,
+        realm: 'chama-one',
+        clientId: 'public-client',
+      },
+      loadUserProfileAtStartUp: true,
+      initOptions: {
+        onLoad: 'login-required', // Can be 'check-sso' for SSO
+        checkLoginIframe: false,
+      },
+      bearerExcludedUrls: ['/assets'], // Exclude certain URLs from Keycloak's token check
+    });
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +57,7 @@ import { FakeLoginService } from './fake-login.service';
     ThemeModule,
     SharedModule,
     RoutesModule,
+    KeycloakAngularModule,
     FormlyConfigModule.forRoot(),
     NgxPermissionsModule.forRoot(),
     ToastrModule.forRoot(),
@@ -55,10 +75,17 @@ import { FakeLoginService } from './fake-login.service';
     // ==================================================
     // 👇 ❌ Remove it in the realworld application
     //
-    { provide: LoginService, useClass: FakeLoginService },
+    // { provide: LoginService, useClass: FakeLoginService },
+    // { provide: LoginService, useClass: LoginService },
     //
     // ==================================================
     ...httpInterceptorProviders,
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeKeycloak,
+    //   multi: true,
+    //   deps: [KeycloakService],
+    // },
     ...appInitializerProviders,
   ],
   bootstrap: [AppComponent],

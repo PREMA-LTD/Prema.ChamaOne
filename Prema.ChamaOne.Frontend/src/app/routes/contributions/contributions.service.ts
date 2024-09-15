@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Member } from '../members/members.service';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 export interface Contribution {
   id: number;
@@ -41,12 +43,21 @@ export interface ContributionAndMemberPagination {
   providedIn: 'root'
 })
 export class ContributionsService {
+  private readonly keycloakService = inject(KeycloakService);
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
-  getContributions(page: number, perPage: number): Observable<ContributionAndMemberPagination> {
-    return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}`);
+  async getContributions(page: number, perPage: number): Promise<Observable<ContributionAndMemberPagination>> {
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}`);
+    } else {      
+      const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
+      const memberId: any | null = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;    
+  
+      console.log("memberId: " + memberId); 
+      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}&memberId=${memberId}`);
+    }
   }
 
 

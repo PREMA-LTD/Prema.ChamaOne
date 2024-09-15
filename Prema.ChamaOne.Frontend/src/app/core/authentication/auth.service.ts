@@ -4,12 +4,14 @@ import { filterObject, isEmptyObject } from './helpers';
 import { User } from './interface';
 import { LoginService } from './login.service';
 import { TokenService } from './token.service';
+import { KeycloakService } from './keycloak.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly loginService = inject(LoginService);
+  private readonly keycloakService = inject(KeycloakService);
   private readonly tokenService = inject(TokenService);
 
   private user$ = new BehaviorSubject<User>({});
@@ -30,6 +32,7 @@ export class AuthService {
   }
 
   check() {
+    // return this.keycloakService.keycloak.authenticated ?? true;
     return this.tokenService.valid();
   }
 
@@ -62,7 +65,7 @@ export class AuthService {
   }
 
   menu() {
-    return iif(() => this.check(), this.loginService.menu(), of([]));
+    return iif(() => true, this.loginService.menu(), of([]));
   }
 
   private assignUser() {

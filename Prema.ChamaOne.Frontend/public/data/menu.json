@@ -4,31 +4,61 @@
       "route": "dashboard",
       "name": "dashboard",
       "type": "link",
-      "icon": "dashboard"
+      "icon": "dashboard",
+      "permissions": {
+        "only": "member",
+        "redirectTo": "/"
+      }
     },
     {
       "route": "members",
       "name": "members",
       "type": "link",
-      "icon": "person"
+      "icon": "person",
+      "permissions": {
+        "only": ["super-admin", "admin"],
+        "redirectTo": "/"
+      }
     },
     {
       "route": "contributions",
       "name": "contributions",
       "type": "link",
-      "icon": "money"
+      "icon": "money",
+      "permissions": {
+        "only": ["super-admin", "admin", "member"],
+        "redirectTo": "/"
+      }
+    },
+    {
+      "route": "projects",
+      "name": "projects",
+      "type": "link",
+      "icon": "article",
+      "permissions": {
+        "only": ["super-admin", "admin", "member"],
+        "redirectTo": "/"
+      }
     },
     {
       "route": "loans",
       "name": "loans",
       "type": "link",
-      "icon": "money"
+      "icon": "money",
+      "permissions": {
+        "only": "super-admin",
+        "redirectTo": "/"
+      }
     },
     {
       "route": "messaging/messages",
       "name": "messages",
       "type": "link",
-      "icon": "chat"
+      "icon": "chat",
+      "permissions": {
+        "only": "super-admin",
+        "redirectTo": "/"
+      }
     }
   ]
 }

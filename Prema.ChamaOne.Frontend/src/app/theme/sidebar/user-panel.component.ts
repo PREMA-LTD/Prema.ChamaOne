@@ -3,31 +3,41 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { AuthService, User } from '@core/authentication';
 import { TranslateModule } from '@ngx-translate/core';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-user-panel',
   template: `
     <div class="matero-user-panel" routerLink="/profile/overview">
-      <img class="matero-user-panel-avatar" [src]="user.avatar" alt="avatar" width="64" />
       <div class="matero-user-panel-info">
-        <h4>{{ user.name }}</h4>
-        <h5>{{ user.email }}</h5>
+        <h4>{{ user?.firstName }} {{ user?.lastName }}</h4>
+        <h5>{{ user?.username }}</h5>
       </div>
     </div>
   `,
-  styleUrl: './user-panel.component.scss',
+  styleUrls: ['./user-panel.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [RouterLink, MatButtonModule, MatIconModule, MatTooltipModule, TranslateModule],
 })
 export class UserPanelComponent implements OnInit {
-  private readonly auth = inject(AuthService);
+  private readonly auth = inject(KeycloakService);
 
-  user!: User;
+  user?: KeycloakProfile; // Change to optional property
 
-  ngOnInit(): void {
-    this.auth.user().subscribe(user => (this.user = user));
+  async ngOnInit(): Promise<void> {
+    const isAuthenticated = await this.auth.isLoggedIn();
+
+    console.log("user panel: "+isAuthenticated);
+
+    try {
+      this.user = await this.auth.loadUserProfile();
+      // Continue with setting permissions
+    } catch (error) {
+      console.error('Failed to load user profile', error);
+      // Handle the error (e.g., show an error message to the user)
+    }
   }
 }

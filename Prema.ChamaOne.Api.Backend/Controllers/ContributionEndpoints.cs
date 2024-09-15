@@ -14,29 +14,54 @@ public static class ContributionEndpoints
     {
         var group = routes.MapGroup("/api/Contribution").WithTags(nameof(Contribution));
 
-        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1) =>
+        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1, int memberId = 0) =>
         {
             var totalContributions = await db.Contribution
                 .AsNoTracking()
                 .CountAsync(); // Get total count for pagination
 
-            var contributions = await db.Contribution
-                .AsNoTracking()
-                .Include(c => c.Member)  // Ensure Member is included in the query
-                .OrderBy(c => c.id) // Ensure a predictable order
-                .Skip(pageNumber * pageSize) // Skip records based on page number
-                .Take(pageSize) // Take records based on page size
-                .Select(c => new ContributionAndMemberDto
-                {
-                    id = c.id,
-                    amount = c.amount,
-                    balance = c.balance,
-                    penalty = c.penalty,
-                    contribution_period = c.contribution_period,
-                    fk_transaction_status_id = (int)c.fk_transaction_status_id,
-                    member = c.Member
-                })
-                .ToListAsync();
+            List<ContributionAndMemberDto> contributions = new List<ContributionAndMemberDto>();
+
+            if (memberId == 0)
+            {
+                contributions = await db.Contribution
+                    .AsNoTracking()
+                    .Include(c => c.Member)  // Ensure Member is included in the query
+                    .OrderBy(c => c.id) // Ensure a predictable order
+                    .Skip(pageNumber * pageSize) // Skip records based on page number
+                    .Take(pageSize) // Take records based on page size
+                    .Select(c => new ContributionAndMemberDto
+                    {
+                        id = c.id,
+                        amount = c.amount,
+                        balance = c.balance,
+                        penalty = c.penalty,
+                        contribution_period = c.contribution_period,
+                        fk_transaction_status_id = (int)c.fk_transaction_status_id,
+                        member = c.Member
+                    })
+                    .ToListAsync();
+            } else
+            {
+                contributions = await db.Contribution
+                    .AsNoTracking()
+                    .Include(c => c.Member)  // Ensure Member is included in the query
+                    .OrderBy(c => c.id) // Ensure a predictable order
+                    .Where(m => m.fk_member_id == memberId) // Use '==' for comparison
+                    .Skip(pageNumber * pageSize) // Skip records based on page number
+                    .Take(pageSize) // Take records based on page size
+                    .Select(c => new ContributionAndMemberDto
+                    {
+                        id = c.id,
+                        amount = c.amount,
+                        balance = c.balance,
+                        penalty = c.penalty,
+                        contribution_period = c.contribution_period,
+                        fk_transaction_status_id = (int)c.fk_transaction_status_id,
+                        member = c.Member
+                    })
+                    .ToListAsync();
+            }
 
             // Return results including pagination metadata
             return Results.Ok(new 

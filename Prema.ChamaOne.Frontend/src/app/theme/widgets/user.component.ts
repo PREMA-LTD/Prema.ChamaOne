@@ -7,13 +7,16 @@ import { TranslateModule } from '@ngx-translate/core';
 import { debounceTime, tap } from 'rxjs';
 
 import { AuthService, SettingsService, User } from '@core';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-user',
   template: `
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-      <img class="avatar" [src]="user.avatar" width="24" alt="avatar" />
-    </button>
+<button mat-icon-button [matMenuTriggerFor]="menu">
+  <mat-icon>person</mat-icon>
+</button>
+
 
     <mat-menu #menu="matMenu">
       <button routerLink="/profile/overview" mat-menu-item>
@@ -46,26 +49,27 @@ import { AuthService, SettingsService, User } from '@core';
 })
 export class UserComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly auth = inject(AuthService);
+  private readonly auth = inject(KeycloakService);
   private readonly router = inject(Router);
   private readonly settings = inject(SettingsService);
 
-  user!: User;
+  user!: KeycloakProfile;
 
-  ngOnInit(): void {
-    this.auth
-      .user()
-      .pipe(
-        tap(user => (this.user = user)),
-        debounceTime(10)
-      )
-      .subscribe(() => this.cdr.detectChanges());
+  async ngOnInit(): Promise<void> {
+    try {
+      this.user = await this.auth.loadUserProfile();
+    } catch (error) {
+      console.error('Failed to load user profile', error);
+      // Handle the error (e.g., show an error message to the user)
+    }
   }
 
   logout() {
-    this.auth.logout().subscribe(() => {
-      this.router.navigateByUrl('/auth/login');
-    });
+    // this.auth.logout().subscribe(() => {
+    //   this.router.navigateByUrl('/auth/login');
+    // });
+
+    this.auth.logout();
   }
 
   restore() {

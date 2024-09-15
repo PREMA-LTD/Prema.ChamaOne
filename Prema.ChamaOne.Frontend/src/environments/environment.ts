@@ -7,6 +7,7 @@ export const environment = {
   apiUrl: 'https://localhost:7136/api',
   baseUrl: '',
   useHash: false,
+  keycloakUrl: 'https://keycloak-dev.prema.co.ke'
 };
 
 /*

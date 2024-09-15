@@ -19,7 +19,8 @@ public static class MemberEndpoints
             return Results.Ok(memberDtos);
         })
         .WithName("GetAllMembers")
-        .WithOpenApi();
+        .WithOpenApi()
+        .RequireAuthorization(); 
 
         group.MapGet("/{id}", async Task<Results<Ok<MemberDto>, NotFound>> (int id, ChamaOneDatabaseContext db, IMapper mapper) =>
         {

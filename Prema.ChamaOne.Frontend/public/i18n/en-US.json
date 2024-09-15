@@ -81,7 +81,8 @@
     "contributions": "Contributions",
     "members": "Members",
     "loans": "Loans",
-    "messages": "Messages"
+    "messages": "Messages",
+    "projects": "Projects"
   },
   "validations": {
     "required": "This field is required",

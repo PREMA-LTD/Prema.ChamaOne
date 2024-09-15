@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageHeaderComponent } from '@shared';
 import { Contribution, ContributionAndMember, ContributionsService } from '../contributions.service';
 import { PayModalComponent } from '../pay-contributions/pay_contribution.component'; 
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-contributions-contributions',
@@ -25,6 +26,7 @@ export class ContributionsContributionsComponent implements OnInit {
   constructor(public dialog: MatDialog) {}
   
   private readonly remoteSrv = inject(ContributionsService);
+  private readonly keycloakService = inject(KeycloakService);
 
   columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id' },
@@ -92,11 +94,11 @@ export class ContributionsContributionsComponent implements OnInit {
     this.getList();
   }
 
-  getList() {
+  async getList() {
     this.isLoading = true;
 
-    this.remoteSrv
-      .getContributions(this.query.page, this.query.per_page)
+    (await this.remoteSrv
+      .getContributions(this.query.page, this.query.per_page))
       .pipe(
         finalize(() => {
           this.isLoading = false;
