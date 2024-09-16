@@ -2,6 +2,8 @@ name: Backend - Build and Push Docker Image to Docker Hub
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'Prema.ChamaOne.Api.Backend/**'  # This will watch for changes in the Backend directory
   workflow_dispatch:

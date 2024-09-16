@@ -2,6 +2,8 @@ name: Frontend - Build and Push Docker Image to Docker Hub
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'Prema.ChamaOne.Frontend/**'  # This will watch for changes in the Frontend directory
   workflow_dispatch:
