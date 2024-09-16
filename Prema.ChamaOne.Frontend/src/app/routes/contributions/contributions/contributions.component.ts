@@ -64,7 +64,7 @@ export class ContributionsContributionsComponent implements OnInit {
         {
           text: 'Pay',
           color: 'primary',
-          iif: (record: any) => record.fk_transaction_status_id !== 1,
+          iif: (record: any) => record.fk_transaction_status_id !== 1 && !this.keycloakService.isUserInRole("member"),
           click: (record: any) => this.openPayModal(record)
         }
       ]
