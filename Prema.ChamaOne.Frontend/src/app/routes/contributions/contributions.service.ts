@@ -39,6 +39,14 @@ export interface ContributionAndMemberPagination {
   contributions: ContributionAndMember[];
 }
 
+export interface ContributionTotalsDto {
+  balance: number;    // Represents the balance amount
+  penalty: number;    // Represents the penalty amount
+  amount: number;     // Represents the contribution amount
+  totalPaid: number;  // Calculated as balance - (penalty + amount)
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,6 +68,17 @@ export class ContributionsService {
     }
   }
 
+  async getContributionTotals(): Promise<Observable<ContributionTotalsDto>> {
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+      return this.http.get<ContributionTotalsDto>(`${this.apiUrl}/Contribution/Totals/0`);
+    } else {      
+      const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
+      const memberId: any | null = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;    
+  
+      console.log("memberId: " + memberId); 
+      return this.http.get<ContributionTotalsDto>(`${this.apiUrl}/Contribution/Totals/${memberId}`);
+    }
+  }
 
   makeContribution(contributionDetails: ContributionDetails): Observable<Contribution> {
     return this.http.post<Contribution>(`${this.apiUrl}/Contribution/MakeContribution`, contributionDetails);

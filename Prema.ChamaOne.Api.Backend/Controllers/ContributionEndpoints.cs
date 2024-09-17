@@ -85,6 +85,46 @@ public static class ContributionEndpoints
         .WithName("GetContributionById")
         .WithOpenApi();
 
+        group.MapGet("/Totals/{memberId}", async Task<Results<Ok<ContributionTotalsDto>, NotFound>> (ChamaOneDatabaseContext db, IMapper mapper, int memberId = 0) =>
+        {
+            if (memberId == 0)
+            {
+                return await db.Contribution.AsNoTracking()
+                    .Where(c => c.fk_member_id > 0)
+                    .GroupBy(_ => true)  // Group everything (all records)
+                    .Select(group => new ContributionTotalsDto
+                    {
+                        balance = group.Sum(model => model.balance),         // Sum of all balances
+                        penalty = group.Sum(model => model.penalty),         // Sum of all penalties
+                        amount = group.Sum(model => model.amount),
+                        totalPaid = group.Sum(model => model.penalty) + (group.Sum(model => model.amount) - group.Sum(model => model.balance)) // TotalPaid = TotalBalance - (TotalPenalty + TotalAmount)
+                    })
+                    .FirstOrDefaultAsync()
+                    is ContributionTotalsDto result && result != null
+                    ? TypedResults.Ok(result)
+                    : TypedResults.NotFound();
+            }
+            else
+            {
+                return await db.Contribution.AsNoTracking()
+                    .Where(c => c.fk_member_id == memberId)
+                    .GroupBy(_ => true)  // Group everything (all records)
+                    .Select(group => new ContributionTotalsDto
+                    {
+                        balance = group.Sum(model => model.balance),         // Sum of all balances
+                        penalty = group.Sum(model => model.penalty),         // Sum of all penalties
+                        amount = group.Sum(model => model.amount),           // Sum of all amounts
+                        totalPaid = group.Sum(model => model.penalty) + (group.Sum(model => model.amount) - group.Sum(model => model.balance))     // TotalPaid = TotalBalance - (TotalPenalty + TotalAmount)
+                    })
+                    .FirstOrDefaultAsync()
+                    is ContributionTotalsDto result && result != null
+                    ? TypedResults.Ok(result)
+                    : TypedResults.NotFound();
+            }
+        })
+        .WithName("GetContributionTotal")
+        .WithOpenApi();
+
         group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int id, ContributionDto contributionDto, ChamaOneDatabaseContext db, IMapper mapper) =>
         {
             var contribution = await db.Contribution.FindAsync(id);

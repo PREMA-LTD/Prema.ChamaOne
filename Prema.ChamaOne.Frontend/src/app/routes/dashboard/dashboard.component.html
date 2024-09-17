@@ -1,9 +1,10 @@
 <page-header />
 
-  <!-- Statistics -->
+<!-- Statistics -->
+<div class="row"> <!-- Bootstrap row container -->
   @for (stat of stats; track stat) {
-    <div class="col-sm-6 col-md-3">
-      <mat-card [class]="['text-white', stat.color]">
+    <div class="col-sm-6 col-md-3"> <!-- Ensures column is responsive -->
+      <mat-card [class]="['text-white', stat.color]" class="w-100"> <!-- Full width of column -->
         <mat-card-header>
           <mat-card-subtitle class="text-white">{{stat.title}}</mat-card-subtitle>
         </mat-card-header>
@@ -18,3 +19,4 @@
       </mat-card>
     </div>
   }
+</div>

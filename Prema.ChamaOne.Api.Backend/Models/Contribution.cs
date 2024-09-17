@@ -68,4 +68,13 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int member_id { get; set; }
 
     }
+
+    public class ContributionTotalsDto
+    {
+        public decimal balance { get; set; }     // Represents the balance amount
+        public decimal penalty { get; set; }     // Represents the penalty amount
+        public decimal amount { get; set; }      // Represents the contribution amount
+        public decimal totalPaid { get; set; }   // Calculated as Balance - (Penalty + Amount)
+    }
+
 }
