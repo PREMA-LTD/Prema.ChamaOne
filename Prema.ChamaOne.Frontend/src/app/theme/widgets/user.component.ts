@@ -9,6 +9,7 @@ import { debounceTime, tap } from 'rxjs';
 import { AuthService, SettingsService, User } from '@core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-user',
@@ -64,12 +65,12 @@ export class UserComponent implements OnInit {
     }
   }
 
-  logout() {
+  async logout() {
     // this.auth.logout().subscribe(() => {
     //   this.router.navigateByUrl('/auth/login');
     // });
 
-    this.auth.logout();
+    await this.auth.logout(environment.baseUrl);
   }
 
   restore() {
