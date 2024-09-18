@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit {
       progress: {
         value: this.contributionTotals.totalPaid / this.contributionTotals.amount,
       },
-      color: 'bg-blue-50',
+      color: 'bg-green-50',
       period: 'Total'
     },
     {
@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit {
         progress: {
           value: this.contributionTotals.totalPaid / this.contributionTotals.amount,
         },
-        color: 'bg-blue-50',
+        color: 'bg-green-50',
         period: 'Total'
       },
       {

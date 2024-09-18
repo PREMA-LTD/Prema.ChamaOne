@@ -19,7 +19,7 @@ import { KeycloakProfile } from 'keycloak-js';
 
 
     <mat-menu #menu="matMenu">
-      <button routerLink="/profile/overview" mat-menu-item>
+     <!-- <button routerLink="/profile/overview" mat-menu-item>
         <mat-icon>account_circle</mat-icon>
         <span>{{ 'profile' | translate }}</span>
       </button>
@@ -30,7 +30,7 @@ import { KeycloakProfile } from 'keycloak-js';
       <button mat-menu-item (click)="restore()">
         <mat-icon>restore</mat-icon>
         <span>{{ 'restore_defaults' | translate }}</span>
-      </button>
+      </button> -->
       <button mat-menu-item (click)="logout()">
         <mat-icon>exit_to_app</mat-icon>
         <span>{{ 'logout' | translate }}</span>

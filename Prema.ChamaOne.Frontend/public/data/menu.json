@@ -6,7 +6,7 @@
       "type": "link",
       "icon": "dashboard",
       "permissions": {
-        "only": "member",
+        "only": ["super-admin", "admin", "member"],
         "redirectTo": "/"
       }
     },

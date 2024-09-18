@@ -9,12 +9,12 @@
           <mat-card-subtitle class="text-white">{{stat.title}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <h2 class="m-t-0 m-b-8">{{stat.amount}}</h2>
-          <mtx-progress [value]="stat.progress.value"
+          <h2 class="m-t-0 m-b-8">Ksh. {{ stat.amount | number:'1.0-0' }}</h2>
+          <!-- <mtx-progress [value]="stat.progress.value"
             height="2px"
             foreground="rgba(255,255,255,1)"
-            background='rgba(0,0,0,.4)' />
-          <small class="text-muted">{{stat.period}}</small>
+            background='rgba(0,0,0,.4)' /> -->
+          <!-- <small class="text-muted">{{stat.period}}</small> -->
         </mat-card-content>
       </mat-card>
     </div>
