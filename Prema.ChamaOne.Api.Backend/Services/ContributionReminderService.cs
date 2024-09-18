@@ -70,7 +70,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
                     }
                     else
                     {
-                        await _bulkSms.SendSms($"+" + memberData.memberDto.contact, $"{memberData.memberDto.surname} {memberData.memberDto.other_names}", message, "");
+                        await _bulkSms.SendSms($"+" + memberData.memberDto.contact, $"{memberData.memberDto.surname} {memberData.memberDto.other_names}", message);
                     }
                 }
                 

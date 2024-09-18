@@ -6,6 +6,7 @@ using Prema.ChamaOne.Api.Backend.Models;
 using AutoMapper;
 using AutoMapper.Execution;
 using System.Drawing.Printing;
+using Prema.ChamaOne.Api.Backend.BulkSms;
 namespace Prema.ChamaOne.Api.Backend.Controllers;
 
 public static class ContributionEndpoints
@@ -166,7 +167,7 @@ public static class ContributionEndpoints
         .WithOpenApi();
 
 
-        group.MapPost("/MakeContribution", async Task<Results<Ok<ContributionDto>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper) =>
+        group.MapPost("/MakeContribution", async Task<Results<Ok<ContributionDto>, NotFound<string>>> (ContributionDetails contributionDetails, ChamaOneDatabaseContext db, IMapper mapper, IBulkSms mobileSasa) =>
         {
             //update contribution record
             var contributionRecord = await db.Contribution
@@ -176,17 +177,17 @@ public static class ContributionEndpoints
                     model.fk_member_id == contributionDetails.member_id)
                 .FirstOrDefaultAsync();
 
-            if(contributionRecord == null)
+            var memberDetails = await db.Member
+                .Where(model => model.id == contributionDetails.member_id)
+                .FirstOrDefaultAsync();
+
+            if (memberDetails == null)
             {
-                var memberDetails = await db.Member
-                    .Where(model => model.id == contributionDetails.member_id)
-                    .FirstOrDefaultAsync();
+                return TypedResults.NotFound("Member data not found.");
+            }
 
-                if(memberDetails == null)
-                {
-                    return TypedResults.NotFound("Member data not found.");
-                }
-
+            if (contributionRecord == null)
+            {
                 decimal contributionAmount = memberDetails.fk_occupation_id == 1 ? 100 : 200; //different rate for employed and student
 
                 contributionRecord = new Contribution
@@ -242,7 +243,7 @@ public static class ContributionEndpoints
             await db.SaveChangesAsync();
 
             //send payment acknowledgement sms
-
+            await mobileSasa.SendSms(memberDetails.contact, $"{memberDetails.other_names} {memberDetails.surname}", $"Hello {memberDetails.other_names}, your contribution payment of Ksh. {contributionDetails.amount_paid} for {contributionDetails.contribution_period.ToString("MMMM yyyy")} has been recieved successfully. Thank you.");
 
             var createdDto = mapper.Map<ContributionDto>(contributionRecord);
 

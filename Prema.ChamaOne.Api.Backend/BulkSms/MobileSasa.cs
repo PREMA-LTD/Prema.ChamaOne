@@ -27,7 +27,7 @@ namespace Prema.ChamaOne.Api.Backend.BulkSms
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task<bool> SendSms(string recipient_contact, string recipient_name, string message, string sender)
+        public async Task<bool> SendSms(string recipient_contact, string recipient_name, string message)
         {
             SMSRecord smsRecord = new SMSRecord
             {
