@@ -1,5 +1,11 @@
 <page-header class="bg-cyan-50" />
 
+<div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px;">
+    <button mat-raised-button color="primary" (click)="createMember()">
+      <mat-icon>person_add</mat-icon> Add Member
+    </button>
+</div>
+    
 <mtx-grid [data]="list"
           [columns]="columns"
           [length]="total"

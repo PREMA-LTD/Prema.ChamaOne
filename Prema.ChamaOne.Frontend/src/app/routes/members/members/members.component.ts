@@ -118,4 +118,9 @@ export class MembersMembersComponent implements OnInit {
     this.query.per_page = 10;
     this.getList();
   }
+
+  createMember() {
+    // this.getList();
+  }
+
 }

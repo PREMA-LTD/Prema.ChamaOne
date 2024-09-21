@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Prema.ChamaOne.Api.Backend.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Prema.ChamaOne.Api.Backend.Caching.CacheServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,13 +74,20 @@ builder.Services.AddSingleton<Logger>();
 builder.Services.AddHostedService<ContributionUpdaterService>();
 builder.Services.AddHostedService<ContributionReminderService>();
 
+//cache
+builder.Services.AddSingleton<ILocationCacheService, LocationCacheService>();
+builder.Services.AddHostedService<LocationCacheWorker>();
+
 var app = builder.Build();
 
-// Apply migrations on startup
-using (var scope = app.Services.CreateScope())
+// Apply migrations on startup on prod or new db
+if (!app.Environment.IsDevelopment())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ChamaOneDatabaseContext>();
-    //dbContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ChamaOneDatabaseContext>();
+        dbContext.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -110,6 +118,8 @@ app.MapLoanEndpoints();
 app.MapSMSRecordEndpoints();
 
 app.MapMessagingEndpoints();
+
+app.MapLocationEndpoints();
 
 app.MapGet("users/me", (ClaimsPrincipal claimsPrinciple) =>
 {
