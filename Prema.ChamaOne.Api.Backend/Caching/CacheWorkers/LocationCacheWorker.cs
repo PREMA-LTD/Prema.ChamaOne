@@ -23,21 +23,17 @@ public class LocationCacheWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            try
-            {
-                _logger.LogInformation("Started loading location cache running at: {time}", DateTimeOffset.Now);
-                await _locationCacheService.LoadCache();
-                _logger.LogInformation("Finished loading location cache running at: {time}", DateTimeOffset.Now);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Location Cache Error Occured Executing {nameof(LocationCacheWorker)}");
-            }
-
-            await Task.Delay(1000, stoppingToken);
+            _logger.LogInformation("Started loading location cache running at: {time}", DateTimeOffset.Now);
+            await _locationCacheService.LoadCache();
+            _logger.LogInformation("Finished loading location cache running at: {time}", DateTimeOffset.Now);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Location Cache Error Occured Executing {nameof(LocationCacheWorker)}");
+        }
+
     }
 
 

@@ -9,4 +9,8 @@ namespace Prema.ChamaOne.Api.Backend.Models.Location
 
         public ICollection<Subcounty> Subcounties { get; set; }
     }
+
+    public class CountyDto : BaseType
+    {
+    }
 }

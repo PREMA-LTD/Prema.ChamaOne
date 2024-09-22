@@ -16,4 +16,7 @@ namespace Prema.ChamaOne.Api.Backend.Models.Location
         public ICollection<Ward> Wards { get; set; }
     }
 
+    public class SubcountyDto : BaseType
+    {
+    }
 }

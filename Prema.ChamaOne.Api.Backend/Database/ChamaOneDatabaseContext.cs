@@ -201,7 +201,7 @@ namespace Prema.ChamaOne.Api.Backend.Database
 
             builder.Entity<Occupation>().HasData(
                 new Occupation { id = 1, name = "Student" },
-                new Occupation { id = 2, name = "Employed" },
+                new Occupation { id = 2, name = "Employee" },
                 new Occupation { id = 3, name = "Self Employed" }
             );
 

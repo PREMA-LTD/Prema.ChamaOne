@@ -19,3 +19,18 @@
     color: white !important;
   }
   
+
+  .responsive-dialog .mat-dialog-container {
+    padding: 24px;
+    overflow: auto;
+  }
+  
+  @media (max-width: 600px) {
+    .responsive-dialog .mat-dialog-container {
+      padding: 16px;
+    }
+  }
+  
+  .responsive-dialog mat-form-field {
+    width: 100%;
+  }

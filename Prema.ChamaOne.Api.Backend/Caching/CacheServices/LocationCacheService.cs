@@ -5,6 +5,8 @@ using System.Diagnostics;
 using Prema.ChamaOne.Api.Backend.Models.Location;
 using Prema.ChamaOne.Api.Backend.Database;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Prema.ChamaOne.Api.Backend.Models;
 
 namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
 {
@@ -22,7 +24,9 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
         bool IsLoaded { get; }
         Task LoadCache(bool forceall = false);
         //Task ReloadCache(bool forceall = false);
-        Result<List<County>> GetCounties();
+        Result<List<CountyDto>> GetCounties();
+        Result<List<SubcountyDto>> GetSubcounties(int countyId);
+        Result<List<WardDto>> GetWards(int subcountyId);
     }
 
     public class LocationCacheService : ILocationCacheService
@@ -34,8 +38,9 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
         public Dictionary<int, Ward> _ward;
         private DateTime _lastReloadDateTime;
         private readonly DateTime _minReloadDateTime = new DateTime(2000, 1, 1);
+        private readonly IMapper _mapper;
 
-        public LocationCacheService(ILogger<LocationCacheService> logger, IServiceProvider serviceProvider)
+        public LocationCacheService(ILogger<LocationCacheService> logger, IServiceProvider serviceProvider, IMapper mapper)
         {
             Status = SingletonStatus.Initializing;
             //_timezoneOffsetSettingRepository = timezoneOffsetSettingRepository;
@@ -44,6 +49,7 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
             _county = new Dictionary<int, County>();
             _subcounty = new Dictionary<int, Subcounty>();
             _ward = new Dictionary<int, Ward>();
+            _mapper = mapper;
         }
 
         public SingletonStatus Status { get; set; }
@@ -60,6 +66,8 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
                 }
 
                 Dictionary<int, County> counties;
+                Dictionary<int, Subcounty> subcounties;
+                Dictionary<int, Ward> wards;
 
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -67,12 +75,30 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
                     counties = (await dbContext.County
                                 .AsNoTracking()
                                 .ToDictionaryAsync(county => county.id, county => county));
+                    subcounties = (await dbContext.Subcounty
+                                .AsNoTracking()
+                                .ToDictionaryAsync(subcounty => subcounty.id, subcounty => subcounty));
+                    wards = (await dbContext.Ward
+                                .AsNoTracking()
+                                .ToDictionaryAsync(ward => ward.id, ward => ward));
                 }
 
                 if (_county.Count == 0 || forceall)
                 {
                     _county = counties;
                     _logger.LogInformation("Counties cache loaded. {}", DateTime.UtcNow);
+                }
+
+                if (_subcounty.Count == 0 || forceall)
+                {
+                    _subcounty = subcounties;
+                    _logger.LogInformation("Subcounties cache loaded. {}", DateTime.UtcNow);
+                }
+
+                if (_ward.Count == 0 || forceall)
+                {
+                    _ward = wards;
+                    _logger.LogInformation("Ward cache loaded. {}", DateTime.UtcNow);
                 }
 
                 _lastReloadDateTime = reloadDateTime;
@@ -151,16 +177,40 @@ namespace Prema.ChamaOne.Api.Backend.Caching.CacheServices
         //}
         #endregion
 
-        public Result<List<County>> GetCounties()
+        public Result<List<CountyDto>> GetCounties()
         {
             if (!_county.Any())
             {
-                return Result.Failure<List<County>>($"Counties Not Found");
+                return Result.Failure<List<CountyDto>>($"Counties Not Found");
             }
             
             return _county == null
-                ? Result.Failure<List<County>>($"Missing couties")
-                : Result.Success<List<County>>(_county.Select(c => c.Value).ToList());
+            ? Result.Failure<List<CountyDto>>($"Missing couties")
+                : Result.Success<List<CountyDto>>(_county.Select(c => _mapper.Map<CountyDto>(c.Value)).ToList());
+        }
+
+        public Result<List<SubcountyDto>> GetSubcounties(int countyId)
+        {
+            if (!_subcounty.Any())
+            {
+                return Result.Failure<List<SubcountyDto>>($"Subcounties Not Found");
+            }
+
+            return _subcounty == null
+            ? Result.Failure<List<SubcountyDto>>($"Missing subcouties")
+                : Result.Success<List<SubcountyDto>>(_subcounty.Where(sc => sc.Value.fk_county_id == countyId).Select(sc => _mapper.Map<SubcountyDto>(sc.Value)).ToList());
+        }
+
+        public Result<List<WardDto>> GetWards(int subcountyId)
+        {
+            if (!_ward.Any())
+            {
+                return Result.Failure<List<WardDto>>($"Wards Not Found");
+            }
+
+            return _ward == null
+            ? Result.Failure<List<WardDto>>($"Missing wards")
+                : Result.Success<List<WardDto>>(_ward.Where(sc => sc.Value.fk_subcounty_id == subcountyId).Select(sc => _mapper.Map<WardDto>(sc.Value)).ToList());
         }
     }
 }

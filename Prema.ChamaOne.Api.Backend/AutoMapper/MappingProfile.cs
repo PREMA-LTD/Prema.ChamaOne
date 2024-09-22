@@ -34,6 +34,10 @@ namespace Prema.ChamaOne.Api.Backend.AutoMapper
 
             CreateMap<TransactionType, TransactionTypeDto>();
             CreateMap<TransactionTypeDto, TransactionType>();
+
+            CreateMap<County, CountyDto>();
+            CreateMap<Subcounty, SubcountyDto>();
+            CreateMap<Ward, WardDto>();
         }
     }
 }

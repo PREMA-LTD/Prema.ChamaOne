@@ -16,6 +16,7 @@ export interface Member {
   fk_occupation_id: number;
 }
 
+
   
 @Injectable()
 export class MembersService {

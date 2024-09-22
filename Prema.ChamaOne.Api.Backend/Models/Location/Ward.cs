@@ -15,4 +15,8 @@ namespace Prema.ChamaOne.Api.Backend.Models.Location
 
         public ICollection<Member> Members { get; set; }
     }
+
+    public class WardDto : BaseType
+    {
+    }
 }

@@ -11,6 +11,8 @@ import { finalize } from 'rxjs';
 
 import { PageHeaderComponent } from '@shared';
 import { Member, MembersService } from './../members.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MemberFormComponent } from '../member-form/member-form.component';
 
 
 @Component({
@@ -20,6 +22,8 @@ import { Member, MembersService } from './../members.service';
   providers: [MembersService],
 })
 export class MembersMembersComponent implements OnInit {
+  
+  constructor(public dialog: MatDialog) {}
 
   private readonly remoteSrv = inject(MembersService);
 
@@ -119,8 +123,23 @@ export class MembersMembersComponent implements OnInit {
     this.getList();
   }
 
-  createMember() {
-    // this.getList();
-  }
+  openCreateMemberDialog(): void {
+    console.log("openCreateMemberDialog")
+    const dialogRef = this.dialog.open(MemberFormComponent, {
+      maxWidth: '90vw',
+      width: '500px',
+      maxHeight: '90vh',
+      height: 'auto',
+      panelClass: './members.component.scss',
+      disableClose: true,
+      autoFocus: true,
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.success === true) {
+        // Refresh the table after a successful payment
+        this.getList();
+      }
+    });
+  }
 }
