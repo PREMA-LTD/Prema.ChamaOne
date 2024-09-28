@@ -30,5 +30,9 @@ export class MembersService {
   createMember(memberDetails: Member): Observable<Member> {
     return this.http.post<Member>(`${this.apiUrl}/Member`, memberDetails);
   }
+  
+  updateMember(memberDetails: Member): Observable<Member> {
+    return this.http.put<Member>(`${this.apiUrl}/Member/${memberDetails.id}`, memberDetails);
+  }
 
 }

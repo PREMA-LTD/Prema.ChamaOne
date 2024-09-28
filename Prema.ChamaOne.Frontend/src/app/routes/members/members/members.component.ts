@@ -13,6 +13,7 @@ import { PageHeaderComponent } from '@shared';
 import { Member, MembersService } from './../members.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MemberFormComponent } from '../member-form/member-form.component';
+import { KeycloakService } from 'keycloak-angular';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class MembersMembersComponent implements OnInit {
   constructor(public dialog: MatDialog) {}
 
   private readonly remoteSrv = inject(MembersService);
+  private readonly keycloakService = inject(KeycloakService);
 
   columns: MtxGridColumn[] = [
     { header: 'Member ID', field: 'id' },
@@ -65,7 +67,20 @@ export class MembersMembersComponent implements OnInit {
         2: { text: 'Employed' },
         3: { text: 'Self Employed' },
       },        
-    },    
+    },
+    {
+      header: 'Actions',
+      field: 'action',
+      type: 'button',
+      buttons: [
+        {
+          text: 'Edit',
+          color: 'primary',
+          iif: (record: Member) => this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"),
+          click: (record: Member) => this.openCreateMemberDialog(record)
+        }
+      ]
+    }    
   ];
   list: Member[] = [];
   total = 0;
@@ -123,7 +138,7 @@ export class MembersMembersComponent implements OnInit {
     this.getList();
   }
 
-  openCreateMemberDialog(): void {
+  openCreateMemberDialog(memberData?: Member): void {
     console.log("openCreateMemberDialog")
     const dialogRef = this.dialog.open(MemberFormComponent, {
       maxWidth: '90vw',
@@ -133,6 +148,7 @@ export class MembersMembersComponent implements OnInit {
       panelClass: './members.component.scss',
       disableClose: true,
       autoFocus: true,
+      data: { memberData }
     });
 
     dialogRef.afterClosed().subscribe(result => {

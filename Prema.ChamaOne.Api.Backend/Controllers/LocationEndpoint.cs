@@ -54,5 +54,20 @@ public static class LocationEndpoints
         })
         .WithName("GetSubcoutyWards")
         .WithOpenApi();
+
+
+        group.MapGet("/{wardId}", async (ILocationCacheService locationCacheService, IMapper mapper, int wardId) =>
+        {
+            var counties = locationCacheService.GetLocation(wardId);
+
+            if (counties.IsSuccess)
+            {
+                return Results.Ok(counties.Value);
+            }
+
+            return Results.NotFound();
+        })
+        .WithName("GetLocation")
+        .WithOpenApi();
     }
 }
