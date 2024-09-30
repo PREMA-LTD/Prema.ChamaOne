@@ -28,7 +28,6 @@
     </div>
 
     <div class="form-row">     
-      
       <mat-form-field appearance="fill">
         <mat-label>Gender</mat-label>
         <mat-select formControlName="fk_gender_id" required>
@@ -43,39 +42,37 @@
       </mat-form-field>
     </div>
 
-    <div class="form-row">
-        <mat-form-field appearance="fill">
-          <mat-label>County</mat-label>
-          <mat-select formControlName="county" required (selectionChange)="onCountyChange($event.value)">
-            <mat-option *ngFor="let county of counties" [value]="county.id">
-              {{county.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        
-  
-        <mat-form-field appearance="fill">
-          <mat-label>Subcounty</mat-label>
-          <mat-select required formControlName="subcounty" (selectionChange)="onSubcountyChange($event.value)" [disabled]="isSubcountyDisabled">
-            <mat-option *ngFor="let subcounty of subcounties" [value]="subcounty.id">
-              {{subcounty.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Ward</mat-label>
-          <mat-select formControlName="ward" required >
-            <mat-option *ngFor="let ward of wards" [value]="ward.id">
-              {{ward.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div class="form-row location-row">
+      <mat-form-field appearance="fill">
+        <mat-label>County</mat-label>
+        <mat-select formControlName="county" required (selectionChange)="onCountyChange($event.value)">
+          <mat-option *ngFor="let county of counties" [value]="county.id">
+            {{county.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Subcounty</mat-label>
+        <mat-select required formControlName="subcounty" (selectionChange)="onSubcountyChange($event.value)" [disabled]="isSubcountyDisabled">
+          <mat-option *ngFor="let subcounty of subcounties" [value]="subcounty.id">
+            {{subcounty.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Ward</mat-label>
+        <mat-select formControlName="ward" required>
+          <mat-option *ngFor="let ward of wards" [value]="ward.id">
+            {{ward.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <div class="form-row">
-
-
       <mat-form-field appearance="fill">
         <mat-label>Member Type</mat-label>
         <mat-select formControlName="fk_member_type_id" required>
@@ -84,7 +81,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill" >
+      <mat-form-field appearance="fill">
         <mat-label>Occupation</mat-label>
         <mat-select formControlName="fk_occupation_id" required>
           <mat-option *ngFor="let occupation of occupations" [value]="occupation.id">
@@ -96,6 +93,6 @@
   </div>
   <div mat-dialog-actions>
     <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    <button mat-button type="submit" >{{ buttonText }}</button>
+    <button mat-button type="submit">{{ buttonText }}</button>
   </div>
 </form>

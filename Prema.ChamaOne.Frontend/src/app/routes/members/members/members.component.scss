@@ -1,36 +1,65 @@
-:host ::ng-deep .mtx-grid {
-    height: 480px;
-  }
-  
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
 
-  /* Define custom styles for the tag colors */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+  background-color: #f5f5f5;
+}
+
+.grid-container {
+  flex: 1;
+  overflow: auto;
+  padding: 0 16px 16px;
+}
+
+:host ::ng-deep .mtx-grid {
+  height: 100%;
+}
+
 .tag-paid {
-    background-color: green !important;
-    color: white !important;
+  background-color: green !important;
+  color: white !important;
+}
+
+.tag-pending {
+  background-color: orange !important;
+  color: white !important;
+}
+
+.tag-overdue {
+  background-color: red !important;
+  color: white !important;
+}
+
+.responsive-dialog .mat-dialog-container {
+  padding: 24px;
+  overflow: auto;
+}
+
+.responsive-dialog mat-form-field {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .action-bar {
+    padding: 12px;
   }
-  
-  .tag-pending {
-    background-color: orange !important;
-    color: white !important;
+
+  .grid-container {
+    padding: 0 12px 12px;
   }
-  
-  .tag-overdue {
-    background-color: red !important;
-    color: white !important;
-  }
-  
 
   .responsive-dialog .mat-dialog-container {
-    padding: 24px;
-    overflow: auto;
+    padding: 16px;
   }
-  
-  @media (max-width: 600px) {
-    .responsive-dialog .mat-dialog-container {
-      padding: 16px;
-    }
+
+  .button-text {
+    display: none;
   }
-  
-  .responsive-dialog mat-form-field {
-    width: 100%;
-  }
+}

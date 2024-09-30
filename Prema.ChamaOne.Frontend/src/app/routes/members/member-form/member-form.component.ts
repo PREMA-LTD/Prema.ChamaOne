@@ -74,7 +74,7 @@ export class MemberFormComponent {
               fk_member_type_id: ['', Validators.required],
               fk_occupation_id: ['', Validators.required]
           });
-          this.memberForm.get('fk_residence_location_id')?.disable(); 
+          this.memberForm.get('ward')?.disable(); 
 
           await this.getCounties();
     } else{
@@ -141,6 +141,7 @@ export class MemberFormComponent {
         console.error('Error fetching subcounties', error);
       }
     );
+    
   }  
 
   async getWards(subcountyId?: number){  
@@ -152,6 +153,7 @@ export class MemberFormComponent {
         console.error('Error fetching wards', error);
       }
     );
+    this.memberForm.get('ward')?.enable(); 
   }  
 
   onCancel(): void {

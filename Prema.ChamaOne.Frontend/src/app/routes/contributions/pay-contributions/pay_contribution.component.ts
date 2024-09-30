@@ -27,8 +27,9 @@ export class PayModalComponent {
 
   ngOnInit(): void {
     // Initialize the form group in ngOnInit
+    console.log(JSON.stringify(this.data))
     this.paymentForm = this.fb.group({
-      memberId: [{ value: this.data.contribution.fk_member_id, disabled: true }, Validators.required],
+      memberDetails: [{ value: `${this.data.contribution.member.id} - ${this.data.contribution.member.other_names} ${this.data.contribution.member.surname}`, disabled: true }, Validators.required],
       amount: [this.data.contribution.balance, [Validators.required, Validators.max(this.data.contribution.balance)]],
       contributionPeriod: [{ value: this.data.contribution.contribution_period, disabled: true }, Validators.required],
       originalAmount: [{ value: this.data.contribution.amount, disabled: true }, Validators.required],
