@@ -1,57 +1,26 @@
-name: Backend - Build and Push Docker Image
-
+name: Backend - Build and Push Docker Image to Docker Hub
 on:
   push:
     branches:
       - master
     paths:
-      - 'Prema.ChamaOne.Api.Backend/**'
+      - 'Prema.ChamaOne.Api.Backend/**'  # This will watch for changes in the Backend directory
   workflow_dispatch:
-
 jobs:
   push_to_registry:
-    name: Push Docker image to registries
+    name: push docker image to hub
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      - name: check repository
         uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
+      - name: login to docker registry
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            kimzdocker/prema.chamaone.api.backend
-            ghcr.io/${{ github.repository_owner }}/prema.chamaone.api.backend
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
+      - name: build and push docker image to registry
         uses: docker/build-push-action@v5
         with:
-          context: ./Prema.ChamaOne.Api.Backend
+          context: ./Prema.ChamaOne.Api.Backend  # Ensure the context points to the Backend directory
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: kimzdocker/prema.chamaone.api.backend:latest
