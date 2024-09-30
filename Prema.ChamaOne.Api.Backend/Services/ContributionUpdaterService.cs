@@ -61,7 +61,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
                 {
                     //create contribution record for new month
                     bool currentMonthContributionExists = dbContext.Contribution
-                        .Any(c => c.fk_member_id == member.id && c.contribution_period == currentPeriod);
+                        .Any(c => c.fk_member_id == member.id && c.contribution_period.Month == currentPeriod.Month && c.contribution_period.Year == currentPeriod.Year);
 
                     if (!currentMonthContributionExists)
                     {
