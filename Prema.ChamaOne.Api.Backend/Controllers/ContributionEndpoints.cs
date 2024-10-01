@@ -86,6 +86,36 @@ public static class ContributionEndpoints
         .WithName("GetContributionById")
         .WithOpenApi();
 
+
+        group.MapGet("/Member/{memberId}", async Task<Results<Ok<ContributionDto[]>, NotFound>> (int memberId, ChamaOneDatabaseContext db, IMapper mapper) =>
+        {
+            // Check if memberId is 0 and fetch records where memberId is greater than 0
+            if (memberId == 0)
+            {
+                var contributions = await db.Contribution.AsNoTracking()
+                    .Where(model => model.fk_member_id > memberId)
+                    .ToListAsync();
+
+                return contributions.Any()
+                    ? TypedResults.Ok(mapper.Map<ContributionDto[]>(contributions))
+                    : TypedResults.NotFound();
+            }
+            else
+            {
+                // Fetch records where memberId matches the parameter
+                var contributions = await db.Contribution.AsNoTracking()
+                    .Where(model => model.fk_member_id == memberId)
+                    .ToListAsync();
+
+                return contributions.Any()
+                    ? TypedResults.Ok(mapper.Map<ContributionDto[]>(contributions))
+                    : TypedResults.NotFound();
+            }
+        })
+        .WithName("GetContributionByMemberId")
+        .WithOpenApi();
+
+
         group.MapGet("/Totals/{memberId}", async Task<Results<Ok<ContributionTotalsDto>, NotFound>> (ChamaOneDatabaseContext db, IMapper mapper, int memberId = 0) =>
         {
             if (memberId == 0)

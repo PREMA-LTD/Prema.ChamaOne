@@ -31,6 +31,7 @@
     "@ngx-formly/material": "^6.3.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "apexcharts": "^3.54.0",
     "dateonly": "^1.2.0",
     "keycloak-angular": "^16.0.1",
     "keycloak-js": "^25.0.5",

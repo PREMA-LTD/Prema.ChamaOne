@@ -1,22 +1,51 @@
 <page-header />
-
 <!-- Statistics -->
-<div class="row"> <!-- Bootstrap row container -->
-  @for (stat of stats; track stat) {
-    <div class="col-sm-6 col-md-3"> <!-- Ensures column is responsive -->
-      <mat-card [class]="['text-white', stat.color]" class="w-100"> <!-- Full width of column -->
+<div class="dashboard-container">
+  <div class="stats-row">
+    @for (stat of stats; track stat) {
+      <div class="stat-card">
+        <mat-card [class]="['text-white', stat.color]">
+          <mat-card-header>
+            <mat-card-subtitle class="text-white">{{stat.title}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <h2 class="m-t-0 m-b-8">Ksh. {{ stat.amount | number:'1.0-0' }}</h2>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+  </div>
+  
+  <div class="chart-table-row">
+    <div class="chart-container">
+      <mat-card>
         <mat-card-header>
-          <mat-card-subtitle class="text-white">{{stat.title}}</mat-card-subtitle>
+          <mat-card-title>Contributions</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <h2 class="m-t-0 m-b-8">Ksh. {{ stat.amount | number:'1.0-0' }}</h2>
-          <!-- <mtx-progress [value]="stat.progress.value"
-            height="2px"
-            foreground="rgba(255,255,255,1)"
-            background='rgba(0,0,0,.4)' /> -->
-          <!-- <small class="text-muted">{{stat.period}}</small> -->
+          <div id="chart1"></div>
         </mat-card-content>
       </mat-card>
     </div>
-  }
+    
+    <div class="table-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Pending Contributions</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mtx-grid [data]="list"
+                    [columns]="columns"
+                    [length]="total"
+                    [loading]="isLoading"
+                    [pageOnFront]="false"
+                    [pageIndex]="query.page"
+                    [pageSize]="query.per_page"
+                    [pageSizeOptions]="[5,10,20]"
+                    (page)="getNextPage($event)">
+          </mtx-grid>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 </div>

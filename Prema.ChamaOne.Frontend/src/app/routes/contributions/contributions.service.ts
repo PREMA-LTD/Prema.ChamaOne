@@ -68,6 +68,18 @@ export class ContributionsService {
     }
   }
 
+  async getMemberContributions(): Promise<Observable<Contribution[]>> {
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+      return this.http.get<Contribution[]>(`${this.apiUrl}/Contribution/Member/0`);
+    } else {      
+      const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
+      const memberId: any | null = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;    
+  
+      console.log("memberId: " + memberId); 
+      return this.http.get<Contribution[]>(`${this.apiUrl}/Contribution/Member/${memberId}`);
+    }
+  }
+
   async getContributionTotals(): Promise<Observable<ContributionTotalsDto>> {
     if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
       return this.http.get<ContributionTotalsDto>(`${this.apiUrl}/Contribution/Totals/0`);

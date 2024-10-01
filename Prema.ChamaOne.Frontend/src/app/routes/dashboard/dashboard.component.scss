@@ -1,0 +1,83 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(50vh - 100px); /* Adjust based on your layout */
+    min-height: 600px; /* Set a minimum height */
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    flex: 1 1 200px;
+    min-width: 150px;
+  }
+
+  .chart-table-row {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    min-height: 0; /* This is important for nested flex containers */
+  }
+
+  .chart-container,
+  .table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px; /* Ensure a minimum width for readability */
+  }
+
+  .chart-container mat-card,
+  .table-container mat-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chart-container mat-card-content,
+  .table-container mat-card-content {
+    flex: 1;
+    overflow: auto;
+  }
+
+  #chart1 {
+    height: 100%;
+    width: 100%;
+  }
+
+  mtx-grid {
+    height: 100%;
+  }
+
+  /* Custom styles for tag colors */
+  .tag-paid {
+    background-color: green !important;
+    color: white !important;
+  }
+  
+  .tag-pending {
+    background-color: orange !important;
+    color: white !important;
+  }
+  
+  .tag-overdue {
+    background-color: red !important;
+    color: white !important;
+  }
+
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .chart-table-row {
+      flex-direction: column;
+    }
+
+    .chart-container,
+    .table-container {
+      min-height: 300px; /* Ensure a minimum height on smaller screens */
+    }
+  }
