@@ -38,6 +38,7 @@ export class MenuService {
 
   /** Get all the menu data. */
   getAll() {
+    console.log("getAll menu")
     return this.menu$.asObservable();
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Injectable, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -22,6 +22,11 @@ import { KeycloakService } from 'keycloak-angular';
   styleUrl: './members.component.scss',
   providers: [MembersService],
 })
+
+@Injectable({
+  providedIn: 'root', // This makes the service globally available without adding it to providers
+})
+
 export class MembersMembersComponent implements OnInit {
   
   constructor(public dialog: MatDialog) {}

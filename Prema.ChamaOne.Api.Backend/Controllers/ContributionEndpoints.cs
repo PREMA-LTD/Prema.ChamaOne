@@ -63,7 +63,7 @@ public static class ContributionEndpoints
                     })
                     .ToListAsync();
             }
-
+              
             // Return results including pagination metadata
             return Results.Ok(new 
             {

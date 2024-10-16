@@ -10,6 +10,9 @@ import { AuthService, SettingsService, User } from '@core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { environment } from '@env/environment';
+import { MemberFormComponent } from 'app/routes/members/member-form/member-form.component';
+import { MembersService, Member } from 'app/routes/members/members.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user',
@@ -24,14 +27,14 @@ import { environment } from '@env/environment';
         <mat-icon>account_circle</mat-icon>
         <span>{{ 'profile' | translate }}</span>
       </button>
-      <button routerLink="/profile/settings" mat-menu-item>
-        <mat-icon>edit</mat-icon>
-        <span>{{ 'edit_profile' | translate }}</span>
-      </button>
       <button mat-menu-item (click)="restore()">
         <mat-icon>restore</mat-icon>
         <span>{{ 'restore_defaults' | translate }}</span>
       </button> -->
+      <button mat-menu-item (click)="openEditProfileDialog()">
+        <mat-icon>edit</mat-icon>
+        <span>{{ 'edit_profile' | translate }}</span>
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>exit_to_app</mat-icon>
         <span>{{ 'logout' | translate }}</span>
@@ -47,12 +50,17 @@ import { environment } from '@env/environment';
   `,
   standalone: true,
   imports: [RouterLink, MatButtonModule, MatIconModule, MatMenuModule, TranslateModule],
+  providers: [MembersService]
 })
 export class UserComponent implements OnInit {
+
+  constructor(public dialog: MatDialog) {}
+  
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly auth = inject(KeycloakService);
   private readonly router = inject(Router);
   private readonly settings = inject(SettingsService);
+  private readonly membersService = inject(MembersService);
 
   user!: KeycloakProfile;
 
@@ -76,5 +84,30 @@ export class UserComponent implements OnInit {
   restore() {
     this.settings.reset();
     window.location.reload();
+  }
+
+  async openEditProfileDialog() {
+    const keycloakProfile: KeycloakProfile | undefined = await this.auth.loadUserProfile();
+    const memberId: any | null = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;   
+    this.membersService.getMembersById(memberId).subscribe((memberData: Member) => {
+    const dialogRef = this.dialog.open(MemberFormComponent, {
+      maxWidth: '90vw',
+      width: '500px',
+      maxHeight: '90vh',
+      height: 'auto',
+      panelClass: 'app/routes/members/members/members.component.scss',
+      disableClose: true,
+      autoFocus: true,
+      data: { memberData }// Pass the user data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Handle the result from the dialog (e.g., update user profile)
+        console.log('The dialog was closed', result);
+      }
+    });
+    });
+
   }
 }

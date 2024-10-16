@@ -21,6 +21,7 @@ import { BrandingComponent } from './widgets/branding.component';
 import { NotificationComponent } from './widgets/notification.component';
 import { TranslateComponent } from './widgets/translate.component';
 import { UserComponent } from './widgets/user.component';
+import { MembersService } from 'app/routes/members/members.service';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { UserComponent } from './widgets/user.component';
     BrandingComponent,
     NotificationComponent,
     TranslateComponent,
-    UserComponent,
+    UserComponent,    
   ],
+  providers: [MembersService]
 })
 export class ThemeModule {}

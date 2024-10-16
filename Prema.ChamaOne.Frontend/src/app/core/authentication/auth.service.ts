@@ -69,6 +69,7 @@ export class AuthService {
   }
 
   private assignUser() {
+    console.log("assignUser menu")
     if (!this.check()) {
       return of({}).pipe(tap(user => this.user$.next(user)));
     }

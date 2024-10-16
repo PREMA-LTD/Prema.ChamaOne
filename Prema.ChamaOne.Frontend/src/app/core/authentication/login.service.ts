@@ -24,6 +24,7 @@ export class LoginService {
   }
 
   me() {
+    console.log("getting me")
     return this.http.get<User>('/me');
   }
 

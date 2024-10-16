@@ -47,7 +47,7 @@ public static class MemberEndpoints
 
             var affected = await db.SaveChangesAsync();
 
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            return TypedResults.Ok();
         })
         .WithName("UpdateMember")
         .WithOpenApi();

@@ -45,3 +45,13 @@ mat-form-field {
 ::ng-deep .mat-dialog-content {
   padding: 0 24px;
 }
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}

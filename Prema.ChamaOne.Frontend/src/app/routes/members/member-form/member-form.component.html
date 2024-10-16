@@ -38,7 +38,10 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Contact</mat-label>
-        <input matInput formControlName="contact" required>
+        <input matInput formControlName="contact" type="number" required>
+        <mat-error *ngIf="memberForm.get('contact')?.hasError('pattern')">
+          Contact must start with '254' and contain exactly 12 digits
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -51,15 +54,21 @@
             {{county.name}}
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="memberForm.get('county')?.invalid">
+          County is required
+        </mat-error>
       </mat-form-field>
       
       <mat-form-field appearance="fill">
         <mat-label>Subcounty</mat-label>
-        <mat-select required formControlName="subcounty" (selectionChange)="onSubcountyChange($event.value)" [disabled]="isSubcountyDisabled">
+        <mat-select formControlName="subcounty" required (selectionChange)="onSubcountyChange($event.value)">
           <mat-option *ngFor="let subcounty of subcounties" [value]="subcounty.id">
             {{subcounty.name}}
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="memberForm.get('subcounty')?.invalid">
+          Subcounty is required
+        </mat-error>
       </mat-form-field>
   
       <mat-form-field appearance="fill">
@@ -69,6 +78,9 @@
             {{ward.name}}
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="memberForm.get('ward')?.invalid">
+          Ward is required
+        </mat-error>
       </mat-form-field>
     </div>
 

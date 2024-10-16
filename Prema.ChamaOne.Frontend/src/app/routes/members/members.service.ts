@@ -26,6 +26,10 @@ export class MembersService {
   getMembers(): Observable<Member[]> {
     return this.http.get<Member[]>(`${this.apiUrl}/Member`);
   }
+
+  getMembersById(memberId: number): Observable<Member> {
+    return this.http.get<Member>(`${this.apiUrl}/Member/${memberId}`);
+  }
   
   createMember(memberDetails: Member): Observable<Member> {
     return this.http.post<Member>(`${this.apiUrl}/Member`, memberDetails);
