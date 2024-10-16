@@ -49,7 +49,7 @@ export class StartupService {
       this.authService
         .change()
         .pipe(
-          tap(user => this.setPermissions(user)),
+          tap(user => this.setPermissions()),
           switchMap(() => this.authService.menu()),
           tap(menu => this.setMenu(menu))
         )
@@ -82,7 +82,7 @@ export class StartupService {
     this.menuService.set(menu);
   }
 
-  private async setPermissions(user: KeycloakProfile) {
+  private async setPermissions() {
     console.log("setting permisions")
     // In a real app, you should get permissions and roles from the user information.
     const roles = this.keycloakService.getUserRoles();

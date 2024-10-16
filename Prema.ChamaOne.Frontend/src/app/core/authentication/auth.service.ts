@@ -15,13 +15,21 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
 
   private user$ = new BehaviorSubject<User>({});
+  // private change$ = merge(
+  //   this.tokenService.change(),
+  //   this.tokenService.refresh().pipe(switchMap(() => this.refresh()))
+  // ).pipe(
+  //   switchMap(() => this.assignUser()),
+  //   share()
+  // );
+
   private change$ = merge(
     this.tokenService.change(),
     this.tokenService.refresh().pipe(switchMap(() => this.refresh()))
   ).pipe(
-    switchMap(() => this.assignUser()),
     share()
   );
+  
 
   init() {
     return new Promise<void>(resolve => this.change$.subscribe(() => resolve()));
@@ -69,7 +77,6 @@ export class AuthService {
   }
 
   private assignUser() {
-    console.log("assignUser menu")
     if (!this.check()) {
       return of({}).pipe(tap(user => this.user$.next(user)));
     }
