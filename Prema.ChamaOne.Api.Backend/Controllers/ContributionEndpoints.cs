@@ -15,57 +15,53 @@ public static class ContributionEndpoints
     {
         var group = routes.MapGroup("/api/Contribution").WithTags(nameof(Contribution));
 
-        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1, int memberId = 0) =>
+        group.MapGet("/", async (ChamaOneDatabaseContext db, IMapper mapper, int pageNumber = 0, int pageSize = 1, int memberId = 0, int month = 0, int year = 0, int status = 0) =>
         {
-            var totalContributions = await db.Contribution
+            var query = db.Contribution
                 .AsNoTracking()
-                .CountAsync(); // Get total count for pagination
+                .Include(c => c.Member)
+                .OrderBy(c => c.id)
+                .AsQueryable();
 
-            List<ContributionAndMemberDto> contributions = new List<ContributionAndMemberDto>();
-
-            if (memberId == 0)
+            // Apply filters dynamically based on the provided parameters
+            if (memberId != 0)
             {
-                contributions = await db.Contribution
-                    .AsNoTracking()
-                    .Include(c => c.Member)  // Ensure Member is included in the query
-                    .OrderBy(c => c.id) // Ensure a predictable order
-                    .Skip(pageNumber * pageSize) // Skip records based on page number
-                    .Take(pageSize) // Take records based on page size
-                    .Select(c => new ContributionAndMemberDto
-                    {
-                        id = c.id,
-                        amount = c.amount,
-                        balance = c.balance,
-                        penalty = c.penalty,
-                        contribution_period = c.contribution_period,
-                        fk_transaction_status_id = (int)c.fk_transaction_status_id,
-                        member = c.Member
-                    })
-                    .ToListAsync();
-            } else
-            {
-                contributions = await db.Contribution
-                    .AsNoTracking()
-                    .Include(c => c.Member)  // Ensure Member is included in the query
-                    .OrderBy(c => c.id) // Ensure a predictable order
-                    .Where(m => m.fk_member_id == memberId) // Use '==' for comparison
-                    .Skip(pageNumber * pageSize) // Skip records based on page number
-                    .Take(pageSize) // Take records based on page size
-                    .Select(c => new ContributionAndMemberDto
-                    {
-                        id = c.id,
-                        amount = c.amount,
-                        balance = c.balance,
-                        penalty = c.penalty,
-                        contribution_period = c.contribution_period,
-                        fk_transaction_status_id = (int)c.fk_transaction_status_id,
-                        member = c.Member
-                    })
-                    .ToListAsync();
+                query = query.Where(c => c.fk_member_id == memberId);
             }
-              
+            if (month != 0)
+            {
+                query = query.Where(c => c.contribution_period.Month == month);
+            }
+            if (year != 0)
+            {
+                query = query.Where(c => c.contribution_period.Year == year);
+            }
+            if (status != 0)
+            {
+                query = query.Where(c => c.fk_transaction_status_id == (TransactionStatusEnum)status);
+            }
+
+            // Count the total records for pagination
+            var totalContributions = await query.CountAsync();
+
+            // Apply pagination and projection to DTO
+            var contributions = await query
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .Select(c => new ContributionAndMemberDto
+                {
+                    id = c.id,
+                    amount = c.amount,
+                    balance = c.balance,
+                    penalty = c.penalty,
+                    contribution_period = c.contribution_period,
+                    fk_transaction_status_id = (int)c.fk_transaction_status_id,
+                    member = c.Member
+                })
+                .ToListAsync();
+
             // Return results including pagination metadata
-            return Results.Ok(new 
+            return Results.Ok(new
             {
                 total = totalContributions,
                 contributions = contributions
@@ -73,6 +69,7 @@ public static class ContributionEndpoints
         })
         .WithName("GetAllContributions")
         .WithOpenApi();
+
 
 
         group.MapGet("/{id}", async Task<Results<Ok<ContributionDto>, NotFound>> (int id, ChamaOneDatabaseContext db, IMapper mapper) =>

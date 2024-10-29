@@ -1,6 +1,62 @@
 <div class="table-container">
   <page-header class="bg-cyan-50"></page-header>
   
+  <form class="m-x--4">
+    <mat-form-field class="m-x-4" appearance="outline" *ngIf="!hideMemberSelect">
+      <!-- <mat-select [(ngModel)]="query.order" name="order" placeholder="Member">
+        <mat-option>All</mat-option>
+        <mat-option value="2023">2023</mat-option>
+        <mat-option value="2024">2024</mat-option>
+      </mat-select> -->
+      
+      <mat-select [(ngModel)]="query.memberId" name="memberId" placeholder="Member">
+      <!-- <mat-select formControlName="contact"> -->
+        <mat-option value="0">All</mat-option>
+        <mat-option *ngFor="let member of members" [value]="member.id">
+          {{  member.id }} - {{  member.other_names }} {{  member.surname }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field class="m-x-4" appearance="outline">
+      <mat-select [(ngModel)]="query.month" name="month" placeholder="Month">
+        <mat-option value="0">All</mat-option>
+        <mat-option value="1">January</mat-option>
+        <mat-option value="2">February</mat-option>
+        <mat-option value="3">March</mat-option>
+        <mat-option value="4">April</mat-option>
+        <mat-option value="5">May</mat-option>
+        <mat-option value="6">June</mat-option>
+        <mat-option value="7">July</mat-option>
+        <mat-option value="8">August</mat-option>
+        <mat-option value="9">September</mat-option>
+        <mat-option value="10">October</mat-option>
+        <mat-option value="11">November</mat-option>
+        <mat-option value="12">December</mat-option>        
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field class="m-x-4" appearance="outline">
+      <mat-select [(ngModel)]="query.year" name="year" placeholder="Year">
+        <mat-option value="0">All</mat-option>
+        <mat-option value="2023">2023</mat-option>
+        <mat-option value="2024">2024</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="m-x-4" appearance="outline">
+      <mat-select [(ngModel)]="query.status" name="status" placeholder="Status">
+        <mat-option value="0">All</mat-option>
+        <mat-option value="1">Paid</mat-option>
+        <mat-option value="2">Pending</mat-option>
+        <mat-option value="3">Overdue</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <button class="m-x-4" mat-flat-button (click)="search()">Search</button>
+    <button class="m-x-4" mat-button color="warn" (click)="reset()">Reset</button>
+  </form>
+
   <mtx-grid [data]="list"
             [columns]="columns"
             [length]="total"

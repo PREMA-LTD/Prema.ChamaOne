@@ -56,15 +56,15 @@ export class ContributionsService {
 
   constructor(private http: HttpClient) {}
 
-  async getContributions(page: number, perPage: number): Promise<Observable<ContributionAndMemberPagination>> {
+  async getContributions(page: number, perPage: number, month: number, year: number, status: number, memberId: any): Promise<Observable<ContributionAndMemberPagination>> {
     if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
-      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}`);
+      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}&memberId=${memberId}&month=${month}&year=${year}&status=${status}`);
     } else {      
       const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
-      const memberId: any | null = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;    
+      memberId = keycloakProfile?.attributes?.['memberId'] ? keycloakProfile.attributes['memberId'] : null;    
   
       console.log("memberId: " + memberId); 
-      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}&memberId=${memberId}`);
+      return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}&memberId=${memberId}&month=${month}&year=${year}&status=${status}`);
     }
   }
 

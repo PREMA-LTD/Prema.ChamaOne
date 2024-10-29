@@ -14,6 +14,8 @@ import { PageHeaderComponent } from '@shared';
 import { Contribution, ContributionAndMember, ContributionsService } from '../contributions.service';
 import { PayModalComponent } from '../pay-contributions/pay_contribution.component'; 
 import { KeycloakService } from 'keycloak-angular';
+import { Member, MembersService } from 'app/routes/members/members.service';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-contributions-contributions',
@@ -27,6 +29,7 @@ export class ContributionsContributionsComponent implements OnInit {
   
   private readonly remoteSrv = inject(ContributionsService);
   private readonly keycloakService = inject(KeycloakService);
+  private readonly membersService = inject(MembersService)
 
   columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id' },
@@ -71,17 +74,23 @@ export class ContributionsContributionsComponent implements OnInit {
     }
   ];
 
+  members: Member[] = [];
+  hideMemberSelect: boolean = true; 
 
   list: ContributionAndMember[] = [];
   total = 0;
   isLoading = true;
 
   query = {
-    q: 'user:nzbin',
+    q: '',
     sort: 'stars',
     order: 'desc',
     page: 0,
     per_page: 10,
+    memberId: 0,
+    month: 0,
+    year: 0,
+    status: 0
   };
 
   get params() {
@@ -91,6 +100,10 @@ export class ContributionsContributionsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.hideMemberSelect = !(this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"));
+    this.membersService.getMembers().subscribe((members: Member[]) => {
+      this.members = members;
+    });
     this.getList();
   }
 
@@ -98,7 +111,7 @@ export class ContributionsContributionsComponent implements OnInit {
     this.isLoading = true;
 
     (await this.remoteSrv
-      .getContributions(this.query.page, this.query.per_page))
+      .getContributions(this.query.page, this.query.per_page, this.query.month, this.query.year, this.query. status, this.query.memberId))
       .pipe(
         finalize(() => {
           this.isLoading = false;
@@ -120,11 +133,16 @@ export class ContributionsContributionsComponent implements OnInit {
   search() {
     this.query.page = 0;
     this.getList();
+    console.log("query", JSON.stringify(this.query))
   }
 
   reset() {
     this.query.page = 0;
     this.query.per_page = 10;
+    this.query.memberId = 0;
+    this.query.month = 0;
+    this.query.status = 0;
+    this.query.year = 0;
     this.getList();
   }
 

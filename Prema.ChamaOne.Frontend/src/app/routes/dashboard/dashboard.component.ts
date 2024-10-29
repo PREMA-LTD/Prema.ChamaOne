@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoading = true;
   
     (await this.contributionsService
-      .getContributions(this.query.page, this.query.per_page))
+      .getContributions(this.query.page, this.query.per_page, 0, 0, 0, 0))
       .pipe(
         map((res: ContributionAndMemberPagination) => {
           // Filter contributions where balance > 0
