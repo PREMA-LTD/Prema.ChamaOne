@@ -100,7 +100,7 @@ export class ContributionsContributionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.hideMemberSelect = !(this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"));
+    this.hideMemberSelect = !(this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("finance"));
     this.membersService.getMembers().subscribe((members: Member[]) => {
       this.members = members;
     });

@@ -26,7 +26,7 @@ const routes: Routes = [
       { path: '500', component: Error500Component },
       { path: '', loadChildren: () => import('./contributions/contributions.module').then(m => m.ContributionsModule) },
       { path: '', loadChildren: () => import('./loans/loans.module').then(m => m.LoansModule) },
-      { path: 'messaging', loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) },
+      { path: '', loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) },
       { path: '', loadChildren: () => import('./members/members.module').then(m => m.MembersModule) },
       { path: 'projects', loadChildren: () => import('./project/project.module').then(m => m.ProjectModule) },
     ],

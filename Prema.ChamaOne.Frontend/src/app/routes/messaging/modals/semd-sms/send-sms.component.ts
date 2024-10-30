@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessagingService, SMS } from '../../messaging.service';
 import { Member, MembersService } from '../../../members/members.service';
+import { map, mergeMap, Observable, of, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-send-sms',
@@ -13,6 +14,8 @@ import { Member, MembersService } from '../../../members/members.service';
 export class SendSmsDialogComponent implements OnInit {
   sendMessageForm: FormGroup;
   members: Member[] = [];
+  filteredMembers: Observable<Member[]> = of([]); 
+  
 
   constructor(
     private fb: FormBuilder,
@@ -30,7 +33,14 @@ export class SendSmsDialogComponent implements OnInit {
   ngOnInit(): void {
     this.membersService.getMembers().subscribe((members: Member[]) => {
       this.members = members;
+      this.filteredMembers = of(members);
     });
+
+    // this.filteredMembers = this.sendMessageForm.get('contact')!.valueChanges.pipe(
+    //   startWith(''),
+    //   mergeMap(() => this.members ? of(this.members) : of([])),
+    //   map(members => this._filter(value || ''))
+    // );
   }
 
   onSend(): void {
@@ -55,5 +65,14 @@ export class SendSmsDialogComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close(false);
+  }
+
+  private _filter(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.members.filter(member => member.other_names.toLowerCase().includes(filterValue) || member.surname.toLowerCase().includes(filterValue));
+  }
+
+  onRecipientSelected(value: any) {
+    this.sendMessageForm.get('contact')!.setValue(value);
   }
 }

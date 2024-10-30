@@ -6,7 +6,7 @@
       "type": "link",
       "icon": "dashboard",
       "permissions": {
-        "only": ["super-admin", "admin", "member"],
+        "only": ["super-admin", "admin", "member", "finance"],
         "redirectTo": "/"
       }
     },
@@ -16,7 +16,7 @@
       "type": "link",
       "icon": "person",
       "permissions": {
-        "only": ["super-admin", "admin"],
+        "only": ["super-admin", "admin", "finance"],
         "redirectTo": "/"
       }
     },
@@ -26,7 +26,17 @@
       "type": "link",
       "icon": "money",
       "permissions": {
-        "only": ["super-admin", "admin", "member"],
+        "only": ["super-admin", "admin", "member", "finance"],
+        "redirectTo": "/"
+      }
+    },
+    {
+      "route": "messaging",
+      "name": "messages",
+      "type": "link",
+      "icon": "chat",
+      "permissions": {
+        "only": ["super-admin", "admin", "finance"],
         "redirectTo": "/"
       }
     },
@@ -36,7 +46,7 @@
       "type": "link",
       "icon": "article",
       "permissions": {
-        "only": ["super-admin", "admin", "member"],
+        "only": ["super-admin", "admin", "member", "finance"],
         "redirectTo": "/"
       }
     },
@@ -46,17 +56,7 @@
       "type": "link",
       "icon": "money",
       "permissions": {
-        "only": "super-admin",
-        "redirectTo": "/"
-      }
-    },
-    {
-      "route": "messaging/messages",
-      "name": "messages",
-      "type": "link",
-      "icon": "chat",
-      "permissions": {
-        "only": "super-admin",
+        "only": ["super-admin", "admin", "finance"],
         "redirectTo": "/"
       }
     }

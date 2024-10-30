@@ -1,22 +1,25 @@
 <h1 mat-dialog-title>Send Message</h1>
 <div mat-dialog-content>
   <form [formGroup]="sendMessageForm">
+    <!-- Recipient with searchable dropdown -->
     <mat-form-field appearance="fill">
       <mat-label>Recipient</mat-label>
-      <mat-select formControlName="contact">
-        <mat-option *ngFor="let member of members" [value]="member.contact">
-          {{ member.other_names }}
+      <input type="text" matInput [matAutocomplete]="auto" formControlName="contact" placeholder="Search Recipient">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onRecipientSelected($event.option.value)">
+        <mat-option *ngFor="let member of filteredMembers | async" [value]="member.contact">
+          {{ member.other_names }} {{ member.surname }}
         </mat-option>
-      </mat-select>
+      </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <!-- Message textarea with defined size -->
+    <mat-form-field appearance="fill" class="message-field">
       <mat-label>Message</mat-label>
-      <textarea matInput formControlName="message"></textarea>
+      <textarea matInput formControlName="message" rows="4" placeholder="Type your message..."></textarea>
     </mat-form-field>
   </form>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
   <button mat-button color="primary" (click)="onSend()">Send</button>
 </div>

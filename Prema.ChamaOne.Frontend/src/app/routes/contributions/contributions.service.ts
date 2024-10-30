@@ -57,7 +57,7 @@ export class ContributionsService {
   constructor(private http: HttpClient) {}
 
   async getContributions(page: number, perPage: number, month: number, year: number, status: number, memberId: any): Promise<Observable<ContributionAndMemberPagination>> {
-    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("finance")){
       return this.http.get<ContributionAndMemberPagination>(`${this.apiUrl}/Contribution?pageNumber=${page}&pageSize=${perPage}&memberId=${memberId}&month=${month}&year=${year}&status=${status}`);
     } else {      
       const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
@@ -69,7 +69,7 @@ export class ContributionsService {
   }
 
   async getMemberContributions(): Promise<Observable<Contribution[]>> {
-    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("finance")){
       return this.http.get<Contribution[]>(`${this.apiUrl}/Contribution/Member/0`);
     } else {      
       const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
@@ -81,7 +81,7 @@ export class ContributionsService {
   }
 
   async getContributionTotals(): Promise<Observable<ContributionTotalsDto>> {
-    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin")){
+    if(this.keycloakService.isUserInRole("super-admin") || this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("finance")){
       return this.http.get<ContributionTotalsDto>(`${this.apiUrl}/Contribution/Totals/0`);
     } else {      
       const keycloakProfile: KeycloakProfile | undefined = await this.keycloakService.loadUserProfile();
