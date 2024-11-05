@@ -55,6 +55,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public int fk_gender_id { get; set; }
         public int fk_member_type_id { get; set; }
         public int fk_occupation_id { get; set; }
+        public string? fk_user_id { get; set; }
     }
 
     public class MemberContributionBalance

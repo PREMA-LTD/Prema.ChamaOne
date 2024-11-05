@@ -18,3 +18,8 @@ export interface Token {
   exp?: number;
   refresh_token?: string;
 }
+
+export interface UserData {
+  member_id: number;
+  user_id: string;
+}

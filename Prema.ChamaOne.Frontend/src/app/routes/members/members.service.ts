@@ -14,6 +14,7 @@ export interface Member {
   fk_gender_id: number;
   fk_member_type_id: number;
   fk_occupation_id: number;
+  fk_user_id: string | null;
 }
 
 

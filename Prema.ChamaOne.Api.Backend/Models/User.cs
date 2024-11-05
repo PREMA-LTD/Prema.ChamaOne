@@ -1,5 +1,6 @@
 ﻿namespace Prema.ChamaOne.Api.Backend.Models
 {
+
     public class User
     {
         public string Username { get; set; }
@@ -16,4 +17,9 @@
         public int MemberId { get; set; }
     }
 
+    public class UserData
+    {
+        public int member_id { get; set; }
+        public string user_id { get; set; }
+    }
 }

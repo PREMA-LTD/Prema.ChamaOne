@@ -15,23 +15,23 @@ public static class UserEndpoints
     {
         var group = routes.MapGroup("/api/User").WithTags(nameof(User));
 
-        group.MapPost("/UpdateMember/{memberId}/{userId}", async Task<Results<Ok, NotFound>> (ChamaOneDatabaseContext db, IMapper mapper, IBulkSms mobileSasa, int memberId = 0, string? userId = null) =>
+        group.MapPost("/UpdateUserId", async Task<Results<Ok, NotFound>> (UserData userData, ChamaOneDatabaseContext db, IMapper mapper, IBulkSms mobileSasal) =>
         {
             //update member data
-            var member = await db.Member.FindAsync(memberId);
+            var member = await db.Member.FindAsync(userData.member_id);
 
             if (member == null)
             {
                 return TypedResults.NotFound();
             }
 
-            member.fk_user_id = userId;
+            member.fk_user_id = userData.user_id;
 
             var affected = await db.SaveChangesAsync();
 
             return TypedResults.Ok();
         })
-        .WithName("MakeContribution")
+        .WithName("UpdateUserId")
         .WithOpenApi();
 
     }

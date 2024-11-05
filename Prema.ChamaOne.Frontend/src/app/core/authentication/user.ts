@@ -12,3 +12,4 @@ export const guest: User = {
   email: 'unknown',
   avatar: 'images/avatar-default.jpg',
 };
+

@@ -222,6 +222,7 @@ export class MemberFormComponent {
         fk_gender_id: this.memberForm.get('fk_gender_id')?.value,
         fk_member_type_id: this.memberForm.get('fk_member_type_id')?.value,
         fk_occupation_id: this.memberForm.get('fk_occupation_id')?.value,
+        fk_user_id: null
       };
 
       // Call the makeContribution method in the service

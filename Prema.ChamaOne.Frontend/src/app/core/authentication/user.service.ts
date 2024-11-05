@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { KeycloakService } from 'keycloak-angular';
 // import { Member } from 'app/routes/members/members.service';
 import { MessagingService, SMS } from 'app/routes/messaging/messaging.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserData } from './interface';
   
 @Injectable()
 export class UserService {
@@ -20,11 +21,12 @@ export class UserService {
   private readonly messagingService = inject(MessagingService);
 
   async createUser(member: any) {
+    let result: boolean = false;
     try {
       const accessToken = await this.keycloakService.getToken();
   
       // Define new user data with metadata for `memberId`
-      const username = `${member.surname}_${member.other_names.split(" ")[0]}`;
+      const username = `${member.surname}_${member.other_names.split(" ")[0]}`.toLowerCase();
       const newUser = {
         username: username,
         firstName: member.other_names.split(" ")[0],
@@ -50,7 +52,8 @@ export class UserService {
       if (!createUserResponse.ok) {
         const errorData = await createUserResponse.json();
         console.error("Error creating user:", errorData);
-        return;
+        
+        return result;
       }
   
       console.log("User created successfully.");
@@ -82,7 +85,8 @@ export class UserService {
       if (!roleResponse.ok) {
         const errorData = await roleResponse.json();
         console.error("Error retrieving role:", errorData);
-        return;
+        
+        return result;
       }
   
       const role = await roleResponse.json();
@@ -101,7 +105,8 @@ export class UserService {
       if (!assignRoleResponse.ok) {
         const errorData = await assignRoleResponse.json();
         console.error("Error assigning role:", errorData);
-        return;
+        
+        return result;
       }
   
       console.log("Role assigned successfully.");
@@ -126,15 +131,28 @@ export class UserService {
         }
       ); 
 
+      //update memeber record with new userid
+      let userData: UserData = {
+        member_id: member.id,
+        user_id: userId
+      }
 
-      this._snackBar.open('User created and member notified successfully.', 'Ok', {
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-        duration: 5 * 1000,
-        });
+      
+      this.updateUserId(userData).subscribe(
+        response => {
+            console.log("Member updated with userid."); 
+        },
+        error => {
+            console.error('Error updating member with user id:', error);
+        }
+      ); 
+
+        result = true;
+        return result;
   
     } catch (error) {
-      console.error("Failed to create user:", error);
+      console.error("Failed to create user:", error);      
+      return result;
     }
   }
   
@@ -174,6 +192,10 @@ export class UserService {
     console.log("Password set successfully.");
 
     return password;
+  }
+
+  updateUserId(userData: UserData) {
+    return this.http.post(`${this.apiUrl}/User/UpdateUserId`, userData);
   }
 
 //   notifyUser(memberDetails: any): Observable<Member> {

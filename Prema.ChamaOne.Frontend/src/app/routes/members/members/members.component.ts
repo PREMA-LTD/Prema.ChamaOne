@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MemberFormComponent } from '../member-form/member-form.component';
 import { KeycloakService } from 'keycloak-angular';
 import { UserService } from '@core/authentication/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -31,7 +32,10 @@ import { UserService } from '@core/authentication/user.service';
 
 export class MembersMembersComponent implements OnInit {
   
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,  
+    private _snackBar: MatSnackBar
+  ) {}
 
   private readonly remoteSrv = inject(MembersService);
   private readonly keycloakService = inject(KeycloakService);
@@ -90,8 +94,8 @@ export class MembersMembersComponent implements OnInit {
         {
           text: 'Create User',
           color: 'primary',
-          iif: (record: Member) => this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"),
-          click: (record: Member) => this.userService.createUser(record)
+          iif: (record: Member) => (this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin")) && record.fk_user_id == null,
+          click: (record: Member) => this.createUser(record)
         }
       ]
     }    
@@ -171,5 +175,43 @@ export class MembersMembersComponent implements OnInit {
         this.getList();
       }
     });
+  }
+
+  async createUser(member: Member) {    
+    await this.userService.createUser(member)
+    .then(response => {
+      console.log("User created.");
+
+      if(response){
+      this._snackBar.open('User created and member notified successfully.', 'Ok', {
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+        duration: 5 * 1000,
+        });
+      } else {
+        this._snackBar.open('Error creating user.', 'Ok', {
+          panelClass: ['error-snackbar'],  // Add a custom CSS class
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          duration: 5 * 1000,
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Error sending message:', error);
+
+      
+      this._snackBar.open('Error creating user.', 'Ok', {
+        panelClass: ['error-snackbar'],  // Add a custom CSS class
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+        duration: 5 * 1000,
+        });
+    });
+
+    
+    this.getList();
+  
   }
 }
