@@ -10893,6 +10893,9 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                     b.Property<int>("fk_residence_location_id")
                         .HasColumnType("int");
 
+                    b.Property<string>("fk_user_id")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("national_id_number")
                         .HasColumnType("int");
 
@@ -10991,7 +10994,7 @@ namespace Prema.ChamaOne.Api.Backend.Migrations
                         new
                         {
                             id = 2,
-                            name = "Employed"
+                            name = "Employee"
                         },
                         new
                         {

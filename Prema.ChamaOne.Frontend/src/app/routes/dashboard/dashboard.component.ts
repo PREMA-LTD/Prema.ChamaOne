@@ -201,7 +201,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         period: 'Total'
       },
       {
-        title: 'Penalties',
+        title: 'Paid Penalties',
         amount: this.contributionTotals.penalty,
         progress: {
           value: (this.contributionTotals.penalty / this.contributionTotals.amount) * 100,

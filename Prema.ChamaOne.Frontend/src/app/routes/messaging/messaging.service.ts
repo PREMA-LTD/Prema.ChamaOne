@@ -44,6 +44,7 @@ export class MessagingService {
   }
   
   sendSms(sms: SMS) {
+    console.log("sending sms")
     return this.http.post(`${this.apiUrl}/Messaging/SendSingleSms`, sms);
   }
   

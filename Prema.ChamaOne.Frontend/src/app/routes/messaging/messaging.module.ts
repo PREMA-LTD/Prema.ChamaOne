@@ -5,6 +5,7 @@ import { MessagingMessagesComponent } from './messages/messages.component';
 import { SendSmsDialogComponent } from './modals/semd-sms/send-sms.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from '@core/authentication/user.service';
 
 const COMPONENTS: any[] = [MessagingMessagesComponent, SendSmsDialogComponent];
 const COMPONENTS_DYNAMIC: any[] = [];
@@ -19,6 +20,6 @@ const COMPONENTS_DYNAMIC: any[] = [];
   declarations: [
     ...COMPONENTS,
     ...COMPONENTS_DYNAMIC
-  ]
+  ],
 })
 export class MessagingModule { }

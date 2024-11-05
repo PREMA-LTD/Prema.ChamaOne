@@ -17,6 +17,7 @@ namespace Prema.ChamaOne.Api.Backend.Models
         public DateOnly date_of_birth { get; set; }
         public int national_id_number { get; set; }
         public string contact { get; set; }
+        public string? fk_user_id { get; set; }
 
         [Required]
         public int fk_residence_location_id { get; set; }

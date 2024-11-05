@@ -14,6 +14,7 @@ import { Member, MembersService } from './../members.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MemberFormComponent } from '../member-form/member-form.component';
 import { KeycloakService } from 'keycloak-angular';
+import { UserService } from '@core/authentication/user.service';
 
 
 @Component({
@@ -27,12 +28,14 @@ import { KeycloakService } from 'keycloak-angular';
   providedIn: 'root', // This makes the service globally available without adding it to providers
 })
 
+
 export class MembersMembersComponent implements OnInit {
   
   constructor(public dialog: MatDialog) {}
 
   private readonly remoteSrv = inject(MembersService);
   private readonly keycloakService = inject(KeycloakService);
+  private readonly userService = inject(UserService);
 
   columns: MtxGridColumn[] = [
     { header: 'Member ID', field: 'id' },
@@ -83,6 +86,12 @@ export class MembersMembersComponent implements OnInit {
           color: 'primary',
           iif: (record: Member) => this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"),
           click: (record: Member) => this.openCreateMemberDialog(record)
+        },        
+        {
+          text: 'Create User',
+          color: 'primary',
+          iif: (record: Member) => this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin"),
+          click: (record: Member) => this.userService.createUser(record)
         }
       ]
     }    

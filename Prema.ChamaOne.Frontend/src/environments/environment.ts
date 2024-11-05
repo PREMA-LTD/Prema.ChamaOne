@@ -7,7 +7,10 @@ export const environment = {
   apiUrl: 'https://localhost:7136/api',
   baseUrl: 'http://localhost:4200',
   useHash: false,
-  keycloakUrl: 'https://keycloak-dev.prema.co.ke'
+  keycloakUrl: 'https://keycloak-dev.prema.co.ke',
+  keycloakRealm: 'chama-one',
+  websiteUrl: 'https://fintrack.shangilia.africa/',
+  contactNumber: '0712490863'
 };
 
 /*

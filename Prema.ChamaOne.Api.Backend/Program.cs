@@ -121,6 +121,8 @@ app.MapMessagingEndpoints();
 
 app.MapLocationEndpoints();
 
+app.MapUserEndpoints();
+
 app.MapGet("users/me", (ClaimsPrincipal claimsPrinciple) =>
 {
     return claimsPrinciple.Claims.ToDictionary(c => c.Type, c => c.Value);
