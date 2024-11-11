@@ -81,7 +81,7 @@ namespace Prema.ChamaOne.Api.Backend.Services
 
         private string? GetReminderMessage(DateTime endOfMonth, MemberContributionBalance memberData)
         {
-            string ending = $"Please clear your pending contributions of Ksh. {memberData.contributionBalance.ToString("F2")} to Shagilia before then. Your support is highly appreciated. For assistance, contact Enock at 0712490863. Thank you!";
+            string ending = $"Please clear your pending contributions of Ksh. {memberData.contributionBalance.ToString("F2")} to Shagilia before then. Payments should be made to Paybill Business No: 522522 Acc No: 1283226626. Your support is highly appreciated. For assistance, contact Enock at 0712490863. Thank you!";
 
             if (isDayOfDeadline(endOfMonth))
             {
