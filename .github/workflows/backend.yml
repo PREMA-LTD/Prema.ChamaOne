@@ -17,5 +17,5 @@ jobs:
         run: |
           docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
           docker build . --tag ghcr.io/enockkim/Prema.ChamaOne.Backend:latest
-          docker push ghcr.io/enockkim/Prema.ChamaOne.Backend:latest
+          docker push ghcr.io/enockkim/prema.chamaone.backend:latest
             
