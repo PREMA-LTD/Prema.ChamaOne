@@ -1,23 +1,26 @@
-name: Backend - Build and Push Docker Image to Docker Hub
+name: Backend - Build and Push Docker Image to Github Container Register
+
 on:
   push:
     branches:
       - master
     paths:
-      - 'Prema.ChamaOne.Api.Backend/**'  # This will watch for changes in the Backend directory
+      - 'Prema.ChamaOne.Api.Backend/**' # This will watch for changes in the Backend directory
   workflow_dispatch:
+
 jobs:
   push_to_registry:
-    name: push docker image to hub
+    name: Push Docker Image to Hub
     runs-on: ubuntu-latest
     steps:
-      - name: check repository
-        uses: actions/checkout@v4
-      - name: build and push the image
-        with:
-          context: ./Prema.ChamaOne.Api.Backend
-          run: |
-            docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
-            docker build . --tag ghcr.io/enockkim/prema.chamaone.backend:latest
-            docker push ghcr.io/enockkim/prema.chamaone.backend:latest
-            
+      - name: Check Out Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: |
+          docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build ./Prema.ChamaOne.Api.Backend --tag ghcr.io/enockkim/prema.chamaone.backend:latest
+          docker push ghcr.io/enockkim/prema.chamaone.backend:latest
