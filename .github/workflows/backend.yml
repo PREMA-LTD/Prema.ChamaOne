@@ -14,8 +14,10 @@ jobs:
       - name: check repository
         uses: actions/checkout@v4
       - name: build and push the image
-        run: |
-          docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
-          docker build . --tag ghcr.io/enockkim/prema.chamaone.backend:latest
-          docker push ghcr.io/enockkim/prema.chamaone.backend:latest
+        with:
+          context: ./Prema.ChamaOne.Api.Backend
+          run: |
+            docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
+            docker build . --tag ghcr.io/enockkim/prema.chamaone.backend:latest
+            docker push ghcr.io/enockkim/prema.chamaone.backend:latest
             
