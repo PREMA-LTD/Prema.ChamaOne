@@ -1,11 +1,11 @@
-name: Backend - Build and Push Docker Image to Github Container Register
+name: Backend - Build and Push Docker Image to Docker Hub
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'Prema.ChamaOne.Api.Backend/**' # This will watch for changes in the Backend directory
+      - 'Prema.ChamaOne.Api.Backend/**'
   workflow_dispatch:
 
 jobs:
@@ -16,11 +16,25 @@ jobs:
       - name: Check Out Repository
         uses: actions/checkout@v3
 
+      - name: Get Version from Git Tags
+        id: get_version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Current version: $VERSION"
+
       - name: Log in to Docker Hub
         run: |
           docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
 
-      - name: Build and Push Docker Image
+      - name: Build and Tag Docker Image
         run: |
-          docker build ./Prema.ChamaOne.Api.Backend --tag ghcr.io/enockkim/prema.chamaone.backend:latest
-          docker push ghcr.io/enockkim/prema.chamaone.backend:latest
+          # Build the Docker image with the version tag
+          docker build ./Prema.ChamaOne.Api.Backend --tag ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }}
+          
+          # Tag the image with the 'latest' tag
+          docker tag ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }} ghcr.io/PREMA-LTD/prema.chamaone.backend:latest
+          
+          # Push both version and latest tags to Docker Hub
+          docker push ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }}
+          docker push ghcr.io/PREMA-LTD/prema.chamaone.backend:latest
