@@ -240,6 +240,16 @@ public static class ContributionEndpoints
                 db.SaveChanges();
             }
 
+            //if paid prior to deadline
+            if (DateOnly.FromDateTime(contributionDetails.date_of_payment) <= contributionDetails.contribution_period)
+            {
+                contributionRecord.penalty = 0;
+
+                decimal contributionAmount = memberDetails.fk_occupation_id == 1 ? 100 : 200;
+                contributionRecord.amount = contributionAmount;
+                contributionRecord.balance = contributionAmount;
+            }
+
             contributionRecord.balance = contributionRecord.balance - contributionDetails.amount_paid;
 
             if (contributionRecord.balance == 0)

@@ -31,16 +31,6 @@
       },
       "children": [
         {
-          "route": "ViewContributions",
-          "name": "ViewContributions",
-          "type": "link",
-          "icon": "money",
-          "permissions": {
-            "only": ["super-admin", "admin", "member", "finance"],
-            "redirectTo": "/"
-          }
-        },
-        {
           "route": "ManageContributions",
           "name": "ManageContributions",
           "type": "link",

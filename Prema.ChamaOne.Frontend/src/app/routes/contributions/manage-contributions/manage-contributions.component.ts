@@ -69,12 +69,6 @@ export class ContributionsManageContributionsComponent implements OnInit {
           color: 'primary',
           iif: (record: any) => record.fk_transaction_status_id !== 1 && (this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin")),
           click: (record: any) => this.openPayModal(record)
-        },
-        {
-          text: 'Edit',
-          color: 'primary',
-          iif: (record: any) => record.fk_transaction_status_id !== 1 && (this.keycloakService.isUserInRole("admin") || this.keycloakService.isUserInRole("super-admin")),
-          click: (record: any) => this.openPayModal(record)
         }
       ]
     }
