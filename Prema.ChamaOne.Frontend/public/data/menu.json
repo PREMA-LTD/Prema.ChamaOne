@@ -23,12 +23,34 @@
     {
       "route": "contributions",
       "name": "contributions",
-      "type": "link",
+      "type": "sub",
       "icon": "money",
       "permissions": {
-        "only": ["super-admin", "admin", "member", "finance"],
+        "only": ["super-admin", "admin"],
         "redirectTo": "/"
-      }
+      },
+      "children": [
+        {
+          "route": "ViewContributions",
+          "name": "ViewContributions",
+          "type": "link",
+          "icon": "money",
+          "permissions": {
+            "only": ["super-admin", "admin", "member", "finance"],
+            "redirectTo": "/"
+          }
+        },
+        {
+          "route": "ManageContributions",
+          "name": "ManageContributions",
+          "type": "link",
+          "icon": "money",
+          "permissions": {
+            "only": ["super-admin", "admin", "member", "finance"],
+            "redirectTo": "/"
+          }
+        }
+      ]
     },
     {
       "route": "messaging",

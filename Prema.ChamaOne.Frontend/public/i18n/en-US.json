@@ -79,6 +79,8 @@
     "permissions.route-guard": "Route Guard",
     "permissions.test": "Permission Test",
     "contributions": "Contributions",
+    "contributions.ViewContributions": "View Contributions",
+    "contributions.ManageContributions": "Manage Contributions",
     "members": "Members",
     "loans": "Loans",
     "messages": "Messages",

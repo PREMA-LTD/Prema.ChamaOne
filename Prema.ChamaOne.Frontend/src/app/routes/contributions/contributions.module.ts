@@ -3,8 +3,9 @@ import { SharedModule } from '@shared/shared.module';
 import { ContributionsRoutingModule } from './contributions-routing.module';
 import { ContributionsContributionsComponent } from './contributions/contributions.component';
 import { PayModalComponent } from './pay-contributions/pay_contribution.component';
+import { ContributionsManageContributionsComponent } from './manage-contributions/manage-contributions.component';
 
-const COMPONENTS: any[] = [ContributionsContributionsComponent, PayModalComponent];
+const COMPONENTS: any[] = [ContributionsContributionsComponent, PayModalComponent, ContributionsManageContributionsComponent];
 const COMPONENTS_DYNAMIC: any[] = [];
 
 @NgModule({

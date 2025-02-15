@@ -18,12 +18,12 @@ import { Member, MembersService } from 'app/routes/members/members.service';
 import { JsonPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-contributions-contributions',
-  templateUrl: './contributions.component.html',
-  styleUrl: './contributions.component.scss',  
+  selector: 'app-contributions-ManageContributions',
+  templateUrl: './manage-contributions.component.html',
+  styleUrl: './manage-contributions.component.scss', 
   providers: [ContributionsService],
 })
-export class ContributionsContributionsComponent implements OnInit {
+export class ContributionsManageContributionsComponent implements OnInit {
 
   constructor(public dialog: MatDialog) {}
   

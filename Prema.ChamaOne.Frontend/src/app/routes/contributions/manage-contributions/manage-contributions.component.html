@@ -1,0 +1,69 @@
+<div class="table-container" fxLayout="column" fxLayoutAlign="center stretch">
+    <page-header class="bg-cyan-50"></page-header>
+    
+    <form fxLayout="row wrap" fxLayoutGap="16px" class="form-container">
+      <mat-form-field class="flex-field" appearance="outline" *ngIf="!hideMemberSelect">
+        <mat-select [(ngModel)]="query.memberId" name="memberId" placeholder="Member">
+          <mat-option value="0">All</mat-option>
+          <mat-option *ngFor="let member of members" [value]="member.id">
+            {{ member.id }} - {{ member.other_names }} {{ member.surname }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field class="flex-field" appearance="outline">
+        <mat-select [(ngModel)]="query.month" name="month" placeholder="Month">
+          <mat-option value="0">All</mat-option>
+          <mat-option value="1">January</mat-option>
+          <mat-option value="2">February</mat-option>
+          <mat-option value="3">March</mat-option>
+          <mat-option value="4">April</mat-option>
+          <mat-option value="5">May</mat-option>
+          <mat-option value="6">June</mat-option>
+          <mat-option value="7">July</mat-option>
+          <mat-option value="8">August</mat-option>
+          <mat-option value="9">September</mat-option>
+          <mat-option value="10">October</mat-option>
+          <mat-option value="11">November</mat-option>
+          <mat-option value="12">December</mat-option>        
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field class="flex-field" appearance="outline">
+        <mat-select [(ngModel)]="query.year" name="year" placeholder="Year">
+          <mat-option value="0">All</mat-option>
+          <mat-option value="2023">2023</mat-option>
+          <mat-option value="2024">2024</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field class="flex-field" appearance="outline">
+        <mat-select [(ngModel)]="query.status" name="status" placeholder="Status">
+          <mat-option value="0">All</mat-option>
+          <mat-option value="1">Paid</mat-option>
+          <mat-option value="2">Pending</mat-option>
+          <mat-option value="3">Overdue</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+  
+      <div class="button-container">
+        <button mat-flat-button (click)="search()">Search</button>
+        <button mat-button color="warn" (click)="reset()">Reset</button>
+      </div>
+    </form>
+  
+    <mtx-grid
+      fxFlex
+      [data]="list"
+      [columns]="columns"
+      [length]="total"
+      [loading]="isLoading"
+      [pageOnFront]="false"
+      [pageIndex]="query.page"
+      [pageSize]="query.per_page"
+      [pageSizeOptions]="[5,10,20]"
+      (page)="getNextPage($event)">
+    </mtx-grid>
+  </div>
+  
