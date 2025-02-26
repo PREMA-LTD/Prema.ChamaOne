@@ -289,5 +289,92 @@ public static class ContributionEndpoints
         .WithName("MakeContribution")
         .WithOpenApi();
 
+
+        group.MapPost("/MakeFutureContribution", async Task<Results<Ok<FutureContributionDetials>, NotFound<string>>> (FutureContributionDetials futureContributionDetails, ChamaOneDatabaseContext db, IMapper mapper, IBulkSms mobileSasa) =>
+        {           
+
+            var memberDetails = await db.Member
+                .Where(model => model.id == futureContributionDetails.memberId)
+                .FirstOrDefaultAsync();
+
+            if (memberDetails == null)
+            {
+                return TypedResults.NotFound("Member data not found.");
+            }
+
+            TimeZoneInfo nairobiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time"); //datetime now for nairobi timezone
+            DateTime localNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, nairobiTimeZone);
+
+            decimal amountDue = memberDetails.fk_occupation_id == 1 ? 100 : 200;
+
+            do
+            {
+                DateTime testDate = localNow;
+
+                var contributionDetails = await db.Contribution
+                    .Where(model =>
+                        model.contribution_period.Year == DateOnly.FromDateTime(testDate).Year &&
+                        model.contribution_period.Month == DateOnly.FromDateTime(testDate).Month &&
+                        model.fk_member_id == futureContributionDetails.memberId)
+                    .FirstOrDefaultAsync();
+
+                localNow = localNow.AddMonths(1); //increment to next month
+
+                if (contributionDetails == null)
+                {
+                    var currentPeriod = DateOnly.FromDateTime(testDate);
+                    var amountPaid = futureContributionDetails.amountPaid >= amountDue ? amountDue : futureContributionDetails.amountPaid;
+                    var balance = futureContributionDetails.amountPaid >= amountDue ? 0 : (amountDue - futureContributionDetails.amountPaid);
+                    futureContributionDetails.amountPaid -= amountPaid;
+
+                    var contribution = new Contribution
+                    {
+                        fk_member_id = futureContributionDetails.memberId,
+                        amount = memberDetails.fk_occupation_id == 1 ? 100 : 200,
+                        balance = balance,
+                        penalty = 0,
+                        contribution_period = currentPeriod,
+                        fk_transaction_status_id = balance > 0 ? TransactionStatusEnum.Pending : TransactionStatusEnum.Paid, // TODO partial payment
+                    };
+
+                    db.Contribution.Add(contribution);
+
+                    db.SaveChanges();
+
+                    var transactionEntity = new TransactionEntity
+                    {
+                        id = 0,
+                        fk_contribution_id = contribution.id
+                    };
+
+                    db.TransactionEntity.Add(transactionEntity);
+
+                    db.SaveChanges();
+                }
+                else
+                {
+                    if (contributionDetails.fk_transaction_status_id == TransactionStatusEnum.Paid) continue;
+
+                    var amountPaid = futureContributionDetails.amountPaid >= contributionDetails.balance ? contributionDetails.balance : futureContributionDetails.amountPaid;
+                    var balance = futureContributionDetails.amountPaid >= contributionDetails.balance ? 0 : (contributionDetails.balance - futureContributionDetails.amountPaid);
+                    futureContributionDetails.amountPaid -= amountPaid;
+
+                    contributionDetails.balance = futureContributionDetails.amountPaid >= amountDue ? 0 : futureContributionDetails.amountPaid;
+                    contributionDetails.fk_transaction_status_id = contributionDetails.balance > 0 ? TransactionStatusEnum.Pending : TransactionStatusEnum.Paid; // TODO partial payment
+                    db.Contribution.Update(contributionDetails);
+                    db.SaveChanges();
+                }
+
+            } while (futureContributionDetails.amountPaid > 0);
+
+            //send payment acknowledgement sms
+            await mobileSasa.SendSms(memberDetails.contact, $"{memberDetails.other_names} {memberDetails.surname}", $"Hello {memberDetails.other_names}, your contribution payment of Ksh. {futureContributionDetails.amountPaid} has been recieved successfully. Thank you.");
+
+            var createdDto = mapper.Map<FutureContributionDetials>(futureContributionDetails);
+
+            return TypedResults.Ok(createdDto);
+        })
+        .WithName("MakeFutureContribution")
+        .WithOpenApi();
     }
 }

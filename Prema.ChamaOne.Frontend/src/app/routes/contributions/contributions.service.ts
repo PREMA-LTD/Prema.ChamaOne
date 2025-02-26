@@ -46,6 +46,13 @@ export interface ContributionTotalsDto {
   totalPaid: number;  // Calculated as balance - (penalty + amount)
 }
 
+export interface FutureContributionDetails {
+  amountPaid: number;
+  reference: string;
+  dateOfPayment: Date;
+  memberId: number;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -95,5 +102,9 @@ export class ContributionsService {
   makeContribution(contributionDetails: ContributionDetails): Observable<Contribution> {
     return this.http.post<Contribution>(`${this.apiUrl}/Contribution/MakeContribution`, contributionDetails);
   }
-
+  
+  
+  makeFutureContribution(futureContributionDetails: FutureContributionDetails): Observable<Contribution> {
+    return this.http.post<Contribution>(`${this.apiUrl}/Contribution/MakeFutureContribution`, futureContributionDetails);
+  }
 }

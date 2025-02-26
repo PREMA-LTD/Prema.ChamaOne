@@ -69,6 +69,13 @@ namespace Prema.ChamaOne.Api.Backend.Models
 
     }
 
+    public class FutureContributionDetials
+    {
+        public decimal amountPaid { get; set; }
+        public string reference { get; set; }
+        public DateTime dateOfPayment { get; set; }
+        public int memberId { get; set; }
+    }
     public class ContributionTotalsDto
     {
         public decimal balance { get; set; }     // Represents the balance amount

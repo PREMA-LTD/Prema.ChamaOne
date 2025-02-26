@@ -16,6 +16,7 @@ import { PayModalComponent } from '../pay-contributions/pay_contribution.compone
 import { KeycloakService } from 'keycloak-angular';
 import { Member, MembersService } from 'app/routes/members/members.service';
 import { JsonPipe } from '@angular/common';
+import { RecordModalComponent } from '../record-contribution/record_contribution.component';
 
 @Component({
   selector: 'app-contributions-ManageContributions',
@@ -161,7 +162,6 @@ export class ContributionsManageContributionsComponent implements OnInit {
     });
   }  
 
-
   openEditModal(contribution: Contribution): void {
     const dialogRef = this.dialog.open(PayModalComponent, {
       width: '400px',
@@ -175,4 +175,19 @@ export class ContributionsManageContributionsComponent implements OnInit {
       }
     });
   }
+
+  recordContribution(): void {
+    const dialogRef = this.dialog.open(RecordModalComponent, {
+      width: '400px',
+      // data: { contribution }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.success === true) {
+        // Refresh the table after a successful payment
+
+        this.getList();
+      }
+    });
+  }  
 }

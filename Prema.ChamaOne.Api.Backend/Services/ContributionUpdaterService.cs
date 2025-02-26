@@ -38,7 +38,11 @@ namespace Prema.ChamaOne.Api.Backend.Services
 
         private DateTime GetNextRunTime()
         {
-            var now = DateTime.Now;
+            //var now = DateTime.Now;
+
+            TimeZoneInfo nairobiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time"); //datetime now for nairobi timezone
+            DateTime now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, nairobiTimeZone);
+
             var nextRun = new DateTime(now.Year, now.Month, 1).AddMonths(1);
             //var nextRun = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second + 10);
 
@@ -54,7 +58,11 @@ namespace Prema.ChamaOne.Api.Backend.Services
                 var dbContext = scope.ServiceProvider.GetRequiredService<ChamaOneDatabaseContext>();
 
                 var members = await dbContext.Member.ToListAsync();
-                var currentPeriod = DateOnly.FromDateTime(DateTime.UtcNow);
+
+                TimeZoneInfo nairobiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time"); //datetime now for nairobi timezone
+                DateTime localNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, nairobiTimeZone);
+
+                var currentPeriod = DateOnly.FromDateTime(localNow);
                 var previousPeriod = currentPeriod.AddMonths(-1);
 
                 foreach (var member in members)

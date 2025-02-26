@@ -37,7 +37,7 @@ export class MembersMembersComponent implements OnInit {
     private _snackBar: MatSnackBar
   ) {}
 
-  private readonly remoteSrv = inject(MembersService);
+  private readonly memberService = inject(MembersService);
   private readonly keycloakService = inject(KeycloakService);
   private readonly userService = inject(UserService);
 
@@ -125,7 +125,7 @@ export class MembersMembersComponent implements OnInit {
   getList() {
     this.isLoading = true;
 
-    this.remoteSrv
+    this.memberService
       .getMembers()
       .pipe(
         finalize(() => {
