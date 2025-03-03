@@ -302,7 +302,7 @@ public static class ContributionEndpoints
                 return TypedResults.NotFound("Member data not found.");
             }
 
-            TimeZoneInfo nairobiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time"); //datetime now for nairobi timezone
+            TimeZoneInfo nairobiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Africa/Nairobi"); //datetime now for nairobi timezone
             DateTime localNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, nairobiTimeZone);
 
             decimal amountDue = memberDetails.fk_occupation_id == 1 ? 100 : 200;
