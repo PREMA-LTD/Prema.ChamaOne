@@ -48,7 +48,7 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           # Build the Docker image with the version tag
-          docker build . --tag ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }}
+          docker build ./Prema.ChamaOne.Api.Backend --tag ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }}
           
           # Tag the image with the 'latest' tag
           docker tag ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }} ghcr.io/prema-ltd/prema.chamaone.backend:latest
