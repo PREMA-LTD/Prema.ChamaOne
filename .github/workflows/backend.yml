@@ -1,4 +1,4 @@
-name: Backend - Build and Push Docker Image to Docker Hub
+name: Build and push docker images
 
 on:
   push:
@@ -12,6 +12,10 @@ jobs:
   push_to_registry:
     name: Push Docker Image to Hub
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+  
     steps:
       - name: Check Out Repository
         uses: actions/checkout@v3
@@ -44,11 +48,11 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           # Build the Docker image with the version tag
-          docker build ./Prema.ChamaOne.Api.Backend --tag ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }}
+          docker build . --tag ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }}
           
           # Tag the image with the 'latest' tag
-          docker tag ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }} ghcr.io/PREMA-LTD/prema.chamaone.backend:latest
+          docker tag ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }} ghcr.io/prema-ltd/prema.chamaone.backend:latest
           
           # Push both version and latest tags to Docker Hub
-          docker push ghcr.io/PREMA-LTD/prema.chamaone.backend:${{ env.VERSION }}
-          docker push ghcr.io/PREMA-LTD/prema.chamaone.backend:latest
+          docker push ghcr.io/prema-ltd/prema.chamaone.backend:${{ env.VERSION }}
+          docker push ghcr.io/prema-ltd/prema.chamaone.backend:latest
