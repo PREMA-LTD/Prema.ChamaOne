@@ -11,10 +11,12 @@ on:
 jobs:
   push_to_registry:
     name: push docker image to hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest	
+    permissions:
+      contents: write
     steps:
       - name: check repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: set up Node.js
         uses: actions/setup-node@v3
@@ -31,15 +33,40 @@ jobs:
           cd Prema.ChamaOne.Frontend
           npm run build --prod
 
-      - name: login to docker registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get Version and Commit Hash
+        id: get_version
+        run: |
+          # Check if a tag exists
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          # If no tag exists, create one using the commit hash or increment version
+          if [ -z "$VERSION" ]; then
+            VERSION="v$(date +'%Y%m%d%H%M%S')"  # Using a timestamp as the version
+            echo "No tag found, creating new tag: $VERSION"
+            git tag $VERSION
+            git push origin $VERSION  # Push the new tag to GitHub
+          else
+            echo "Tag found: $VERSION"
+          fi
+          
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+          echo "Current version: $VERSION, Commit Hash: $COMMIT_HASH"
 
-      - name: build and push docker image to registry
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Prema.ChamaOne.Frontend  # Ensure the context points to the Frontend directory
-          push: true
-          tags: kimzdocker/prema.chamaone.frontend:latest
+      - name: Log in to Docker Hub
+        run: |
+          docker login --username enockkim --password ${{ secrets.GCR_TOKEN }} ghcr.io
+
+      - name: Build and Tag Docker Image
+        run: |
+          # Build the Docker image with the version tag
+          docker build ./Prema.ChamaOne.Frontend --tag ghcr.io/prema-ltd/prema.chamaone.frontend:${{ env.VERSION }}
+          
+          # Tag the image with the 'latest' tag
+          docker tag ghcr.io/prema-ltd/prema.chamaone.frontend:${{ env.VERSION }} ghcr.io/prema-ltd/prema.chamaone.frontend:latest
+          
+          # Push both version and latest tags to Docker Hub
+          docker push ghcr.io/prema-ltd/prema.chamaone.frontend:${{ env.VERSION }}
+          docker push ghcr.io/prema-ltd/prema.chamaone.frontend:latest		  
+ 
