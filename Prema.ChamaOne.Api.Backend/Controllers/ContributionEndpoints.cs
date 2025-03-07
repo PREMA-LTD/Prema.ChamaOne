@@ -241,7 +241,7 @@ public static class ContributionEndpoints
             }
 
             //if paid prior to deadline
-            if (DateOnly.FromDateTime(contributionDetails.date_of_payment) <= contributionDetails.contribution_period)
+            if (DateOnly.FromDateTime(contributionDetails.date_of_payment) <= new DateOnly(contributionDetails.contribution_period.Year, contributionDetails.contribution_period.Month, 1).AddMonths(1))
             {
                 contributionRecord.penalty = 0;
 
