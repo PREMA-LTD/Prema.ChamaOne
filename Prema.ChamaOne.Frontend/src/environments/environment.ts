@@ -10,7 +10,8 @@ export const environment = {
   keycloakUrl: 'https://keycloak-dev.prema.co.ke',
   keycloakRealm: 'chama-one',
   websiteUrl: 'https://fintrack.shangilia.africa/',
-  contactNumber: '0712490863'
+  contactNumber: '0712490863',
+  keycloakClient: 'public-client'
 };
 
 /*

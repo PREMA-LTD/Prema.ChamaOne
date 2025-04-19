@@ -9,8 +9,8 @@ export function initializeApp(keycloak: KeycloakService, startupService: Startup
     keycloak.init({
       config: {
         url: environment.keycloakUrl,
-        realm: 'chama-one',
-        clientId: 'public-client',
+        realm: environment.keycloakRealm,
+        clientId: environment.keycloakClient,
       },
       initOptions: {
         onLoad: 'login-required',

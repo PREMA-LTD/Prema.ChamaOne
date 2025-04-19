@@ -36,8 +36,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     keycloak.init({
       config: {
         url: environment.keycloakUrl,
-        realm: 'chama-one',
-        clientId: 'public-client',
+        realm: environment.keycloakRealm,
+        clientId: environment.keycloakClient
       },
       loadUserProfileAtStartUp: true,
       initOptions: {

@@ -13,8 +13,8 @@ export class KeycloakService {
     if (!this._keycloak) {
       this._keycloak = new Keycloak({
         url: environment.keycloakUrl,
-        realm: 'chama-one',
-        clientId: 'public-client',
+        realm: environment.keycloakRealm,
+        clientId: environment.keycloakClient
       });
     }
     return this._keycloak;
