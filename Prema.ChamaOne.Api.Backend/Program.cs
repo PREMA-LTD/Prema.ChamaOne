@@ -18,14 +18,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Read allowed origins from config
+var allowedOrigins = builder.Configuration.GetSection("AllowedCorsOrigins").Get<string[]>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder
-            .WithOrigins("http://localhost:4200", "https://fintrack.shangilia.africa", "https://fintrack.prema.co.ke") // Update this with your Angular app's URL
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
