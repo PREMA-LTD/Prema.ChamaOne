@@ -9,10 +9,10 @@ using Prema.ChamaOne.Application.Services;
 using Prema.ChamaOne.Infrastructure.BulkSms;
 using Prema.ChamaOne.Infrastructure.AppSettings;
 using Prema.ChamaOne.Infrastructure.Telegram;
+using Prema.ChamaOne.Infrastructure.Logging;
 using Prema.ChamaOne.Infrastructure.Caching.CacheServices;
 using Prema.ChamaOne.Api.Controllers;
 using Prema.ChamaOne.Application.AutoMapper;
-using Serilog.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,11 +69,11 @@ builder.Services.AddDbContext<ChamaOneDatabaseContext>(
 );
 
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<Logger>();
 builder.Services.AddSingleton<IBulkSms, MobileSasa>();
 builder.Services.Configure<MobileSasaSettings>(builder.Configuration.GetSection("MobileSasa"));
 builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection("TelegramBot"));
 builder.Services.AddSingleton<TelegramBot>();
-builder.Services.AddSingleton<Logger>();
 
 builder.Services.AddHostedService<ContributionUpdaterService>();
 builder.Services.AddHostedService<ContributionReminderService>();

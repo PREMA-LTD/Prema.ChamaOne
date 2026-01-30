@@ -226,7 +226,7 @@ namespace Prema.ChamaOne.Infrastructure.Database
                 new TransactionStatus { id = TransactionStatusEnum.Overdue, name = "Overdue" }
             );
 
-            var csvFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Database", "LocationData", "kenya-location-data.csv");
+            var csvFilePath = Path.Combine(Directory.GetCurrentDirectory(), "LocationData", "kenya-location-data.csv");
             var records = LoadLocationData.LoadCsvData(csvFilePath);
 
             var counties = records.Select(r => r.Item1).DistinctBy(c => c.id).ToList();
