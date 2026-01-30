@@ -1,0 +1,6 @@
+@Prema.ChamaOne.Api_HostAddress = http://localhost:5047
+
+GET {{Prema.ChamaOne.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

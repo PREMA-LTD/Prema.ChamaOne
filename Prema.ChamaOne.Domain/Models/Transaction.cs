@@ -1,0 +1,49 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using Prema.ChamaOne.Domain.Models.Location;
+
+namespace Prema.ChamaOne.Domain.Models
+{
+    [Table("transaction")]
+    public class Transaction
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
+        public DateTime date { get; set; }
+        public DateTime date_of_record { get; set; }
+        [Column(TypeName = "decimal(14,2)")]
+        public decimal amount { get; set; }
+        public string description { get; set; }
+        public string reference { get; set; }
+
+
+        [Required]
+        public int fk_transaction_type_id { get; set; }
+        [ForeignKey("fk_transaction_type_id")]
+        public TransactionType TransactionType { get; set; }
+
+        [Required]
+        public int fk_transaction_entity_type_id { get; set; }
+        [ForeignKey("fk_transaction_entity_type_id")]
+        public TransactionEntityType TransactionEntityType { get; set; }
+
+        [Required]
+        public int fk_transaction_entity_id { get; set; }
+
+        [ForeignKey("fk_transaction_entity_id")]
+        public TransactionEntity TransactionEntity { get; set; }
+
+    }
+
+
+    public class TransactionDto
+    {
+        public int id { get; set; }
+        public DateTime date_of_transaction { get; set; }
+        public decimal amount { get; set; }
+        public string description { get; set; }
+        public string reference { get; set; }
+        public int fk_contribution_id { get; set; }
+    }
+}
